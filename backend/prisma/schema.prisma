@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELED
+  NO_SHOW
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String
+  role      Role     @default(CLIENT)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointments  Appointment[]
+  subscriptions Subscription[]
+
+  @@map("users")
+}
+
+model Barber {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  photoUrl    String?
+  specialties String[]
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workingHours     WorkingHour[]
+  blockedSchedules BlockedSchedule[]
+  appointments     Appointment[]
+
+  @@map("barbers")
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  duration    Int
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  appointments Appointment[]
+
+  @@map("services")
+}
+
+model Appointment {
+  id        String            @id @default(uuid())
+  clientId  String
+  barberId  String
+  serviceId String
+  date      DateTime          @db.Date
+  startTime String
+  endTime   String
+  status    AppointmentStatus @default(SCHEDULED)
+  notes     String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  client  User    @relation(fields: [clientId], references: [id])
+  barber  Barber  @relation(fields: [barberId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@index([barberId, date])
+  @@index([clientId])
+  @@map("appointments")
+}
+
+model Plan {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  benefits    String[]
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id        String             @id @default(uuid())
+  clientId  String
+  planId    String
+  startDate DateTime           @default(now())
+  endDate   DateTime?
+  status    SubscriptionStatus @default(ACTIVE)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  client User @relation(fields: [clientId], references: [id])
+  plan   Plan @relation(fields: [planId], references: [id])
+
+  @@index([clientId])
+  @@map("subscriptions")
+}
+
+// Horários de funcionamento. barberId nulo representa o horário padrão da
+// barbearia (usado por barbeiros que não possuem horário próprio definido).
+model WorkingHour {
+  id        String  @id @default(uuid())
+  barberId  String?
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  closed    Boolean @default(false)
+
+  barber Barber? @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  @@index([barberId, dayOfWeek])
+  @@map("working_hours")
+}
+
+// Bloqueio de horários específicos (folga, feriado, manutenção etc.).
+// barberId nulo bloqueia o horário para todos os barbeiros.
+model BlockedSchedule {
+  id        String   @id @default(uuid())
+  barberId  String?
+  date      DateTime @db.Date
+  startTime String
+  endTime   String
+  reason    String?
+  createdAt DateTime @default(now())
+
+  barber Barber? @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  @@index([barberId, date])
+  @@map("blocked_schedules")
+}
