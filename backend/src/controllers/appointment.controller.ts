@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { AppointmentStatus } from '@prisma/client';
 import { appointmentService } from '../services/appointment.service';
 import { asyncHandler } from '../utils/asyncHandler';
 import { AppError } from '../utils/AppError';
+import { ListAppointmentsQueryInput } from '../validators/appointment.validator';
 
 export const appointmentController = {
   availability: asyncHandler(async (req: Request, res: Response) => {
@@ -24,15 +24,7 @@ export const appointmentController = {
   }),
 
   listAll: asyncHandler(async (req: Request, res: Response) => {
-    const query = req.query as {
-      date?: string;
-      barberId?: string;
-      clientId?: string;
-      serviceId?: string;
-      status?: AppointmentStatus;
-      page?: number;
-      pageSize?: number;
-    };
+    const query = req.query as unknown as ListAppointmentsQueryInput;
     const result = await appointmentService.listAll(query);
     res.status(200).json(result);
   }),
