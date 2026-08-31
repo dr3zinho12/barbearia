@@ -1,6 +1,8 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../config/prisma';
 import { AppError } from '../utils/AppError';
+import { hashPassword } from '../utils/hash';
+import { CreateAdminInput } from '../validators/user.validator';
 
 function sanitizeUser<T extends { password: string }>(user: T) {
   const { password: _password, ...rest } = user;
@@ -78,5 +80,24 @@ export const userService = {
     }
     const updated = await prisma.user.update({ where: { id }, data });
     return sanitizeUser(updated);
+  },
+
+  async listAdmins() {
+    const admins = await prisma.user.findMany({ where: { role: 'ADMIN' }, orderBy: { name: 'asc' } });
+    return admins.map(sanitizeUser);
+  },
+
+  async createAdmin(data: CreateAdminInput) {
+    const existing = await prisma.user.findUnique({ where: { email: data.email } });
+    if (existing) {
+      throw AppError.conflict('Já existe uma conta cadastrada com este e-mail');
+    }
+
+    const hashed = await hashPassword(data.password);
+    const admin = await prisma.user.create({
+      data: { name: data.name, email: data.email, phone: data.phone, password: hashed, role: 'ADMIN' },
+    });
+
+    return sanitizeUser(admin);
   },
 };

@@ -18,4 +18,14 @@ export const userController = {
     const client = await userService.updateClient(req.params.id, req.body);
     res.status(200).json(client);
   }),
+
+  listAdmins: asyncHandler(async (_req: Request, res: Response) => {
+    const admins = await userService.listAdmins();
+    res.status(200).json(admins);
+  }),
+
+  createAdmin: asyncHandler(async (req: Request, res: Response) => {
+    const admin = await userService.createAdmin(req.body);
+    res.status(201).json(admin);
+  }),
 };

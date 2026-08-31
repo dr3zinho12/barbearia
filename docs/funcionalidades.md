@@ -46,6 +46,8 @@
 - **Planos**: CRUD completo, visualização da lista de assinantes de cada plano.
 - **Horários de funcionamento**: configuração do expediente padrão semanal da barbearia e criação/remoção de
   bloqueios pontuais (folgas, feriados, manutenção), por barbeiro específico ou para toda a barbearia.
+- **Administradores**: listagem dos administradores cadastrados e criação de novos administradores (nome, e-mail,
+  telefone e senha) — acesso restrito a quem já é administrador; não existe cadastro público desse papel.
 - **Configurações**: dados da própria conta de administrador (perfil e senha) e indicação de onde alterar a
   identidade/nome do sistema.
 

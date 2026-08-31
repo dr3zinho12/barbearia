@@ -28,4 +28,14 @@ export const adminService = {
     const { data } = await api.put<User>(`/admin/users/${id}`, payload);
     return data;
   },
+
+  async listAdmins(): Promise<User[]> {
+    const { data } = await api.get<User[]>('/admin/admins');
+    return data;
+  },
+
+  async createAdmin(payload: { name: string; email: string; phone: string; password: string }): Promise<User> {
+    const { data } = await api.post<User>('/admin/admins', payload);
+    return data;
+  },
 };

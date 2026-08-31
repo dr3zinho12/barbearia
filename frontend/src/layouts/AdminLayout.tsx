@@ -1,4 +1,4 @@
-import { BuildingIcon, CalendarIcon, ChartIcon, ScissorsIcon, SettingsIcon, TagIcon, UsersIcon } from '../components/icons';
+import { BuildingIcon, CalendarIcon, ChartIcon, ScissorsIcon, SettingsIcon, TagIcon, UserIcon, UsersIcon } from '../components/icons';
 import { SidebarShell } from '../components/SidebarShell';
 
 const NAV_ITEMS = [
@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: '/admin/agendamentos', label: 'Agendamentos', icon: <CalendarIcon /> },
   { to: '/admin/planos', label: 'Planos', icon: <TagIcon /> },
   { to: '/admin/horarios', label: 'Horários', icon: <BuildingIcon /> },
+  { to: '/admin/administradores', label: 'Administradores', icon: <UserIcon /> },
   { to: '/admin/configuracoes', label: 'Configurações', icon: <SettingsIcon /> },
 ];
 

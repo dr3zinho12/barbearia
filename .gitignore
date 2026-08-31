@@ -10,3 +10,4 @@ Thumbs.db
 coverage/
 .vscode/
 backend/prisma/dev.db
+*.tsbuildinfo

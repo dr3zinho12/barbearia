@@ -105,3 +105,5 @@ Todas as rotas abaixo exigem `role === 'ADMIN'`.
 | GET | `/admin/users` | Lista clientes com busca (`search`), filtro `active` e paginação |
 | GET | `/admin/users/:id` | Detalhe de um cliente: dados, histórico de agendamentos e assinatura |
 | PUT | `/admin/users/:id` | Atualiza nome/telefone/status de um cliente |
+| GET | `/admin/admins` | Lista os administradores cadastrados |
+| POST | `/admin/admins` | Cadastra um novo administrador (nome, e-mail, telefone, senha) |

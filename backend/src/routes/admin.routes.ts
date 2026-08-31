@@ -4,13 +4,16 @@ import { userController } from '../controllers/user.controller';
 import { authenticate, authorize } from '../middlewares/auth';
 import { validate } from '../middlewares/validate';
 import { idParamSchema } from '../validators/common.validator';
-import { adminUpdateUserSchema, listUsersQuerySchema } from '../validators/user.validator';
+import { adminUpdateUserSchema, createAdminSchema, listUsersQuerySchema } from '../validators/user.validator';
 
 const router = Router();
 
 router.use(authenticate, authorize('ADMIN'));
 
 router.get('/dashboard', dashboardController.summary);
+
+router.get('/admins', userController.listAdmins);
+router.post('/admins', validate({ body: createAdminSchema }), userController.createAdmin);
 
 router.get('/users', validate({ query: listUsersQuerySchema }), userController.list);
 router.get('/users/:id', validate({ params: idParamSchema }), userController.getById);

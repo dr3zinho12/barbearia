@@ -39,5 +39,12 @@
     "tsx": "^4.16.2",
     "typescript": "^5.5.3",
     "vitest": "^2.0.5"
+  },
+  "allowScripts": {
+    "@prisma/client@5.22.0": true,
+    "@prisma/engines@5.22.0": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.21.5": true,
+    "prisma@5.22.0": true
   }
 }

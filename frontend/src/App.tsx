@@ -3,6 +3,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { ClientLayout } from './layouts/ClientLayout';
 import { AdminLayout } from './layouts/AdminLayout';
 import { PublicLayout } from './layouts/PublicLayout';
+import AdminAdministradores from './pages/admin/AdminAdministradores';
 import AdminAgendamentos from './pages/admin/AdminAgendamentos';
 import AdminBarbeiros from './pages/admin/AdminBarbeiros';
 import AdminClienteDetalhe from './pages/admin/AdminClienteDetalhe';
@@ -63,6 +64,7 @@ export default function App() {
           <Route path="agendamentos" element={<AdminAgendamentos />} />
           <Route path="planos" element={<AdminPlanos />} />
           <Route path="horarios" element={<AdminHorarios />} />
+          <Route path="administradores" element={<AdminAdministradores />} />
           <Route path="configuracoes" element={<AdminConfiguracoes />} />
         </Route>
       </Route>
