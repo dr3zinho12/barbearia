@@ -29,7 +29,7 @@ export default function Login() {
     try {
       const user = await login(data);
       toast.success(`Bem-vindo(a) de volta, ${user.name.split(' ')[0]}!`);
-      const redirectTo = (location.state as { from?: Location })?.from?.pathname;
+      const redirectTo = (location.state as { from?: { pathname: string } } | null)?.from?.pathname;
       navigate(redirectTo ?? (user.role === 'ADMIN' ? '/admin' : '/cliente'));
     } catch (err) {
       toast.error(extractErrorMessage(err, 'E-mail ou senha inválidos'));
