@@ -1,0 +1,12 @@
+-- AlterEnum
+ALTER TYPE "Role" ADD VALUE 'BARBER';
+
+-- AlterTable
+ALTER TABLE "barbers" ADD COLUMN     "userId" TEXT;
+
+-- CreateIndex
+CREATE UNIQUE INDEX "barbers_userId_key" ON "barbers"("userId");
+
+-- AddForeignKey
+ALTER TABLE "barbers" ADD CONSTRAINT "barbers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+

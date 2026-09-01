@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { appointmentService } from '../services/appointment.service';
+import { barberService } from '../services/barber.service';
 import { asyncHandler } from '../utils/asyncHandler';
 import { AppError } from '../utils/AppError';
 import { ListAppointmentsQueryInput } from '../validators/appointment.validator';
@@ -25,6 +26,12 @@ export const appointmentController = {
 
   listAll: asyncHandler(async (req: Request, res: Response) => {
     const query = req.query as unknown as ListAppointmentsQueryInput;
+
+    if (req.user?.role === 'BARBER') {
+      const barber = await barberService.getByUserId(req.user.id);
+      query.barberId = barber.id;
+    }
+
     const result = await appointmentService.listAll(query);
     res.status(200).json(result);
   }),
@@ -36,18 +43,34 @@ export const appointmentController = {
 
   cancel: asyncHandler(async (req: Request, res: Response) => {
     if (!req.user) throw AppError.unauthorized();
-    const appointment = await appointmentService.cancel(req.params.id, req.user);
+    const appointment = await appointmentService.cancel(req.params.id, req.user as { id: string; role: 'CLIENT' | 'ADMIN' });
     res.status(200).json(appointment);
   }),
 
   reschedule: asyncHandler(async (req: Request, res: Response) => {
     if (!req.user) throw AppError.unauthorized();
-    const appointment = await appointmentService.reschedule(req.params.id, req.user, req.body.date, req.body.startTime);
+    const appointment = await appointmentService.reschedule(
+      req.params.id,
+      req.user as { id: string; role: 'CLIENT' | 'ADMIN' },
+      req.body.date,
+      req.body.startTime,
+    );
     res.status(200).json(appointment);
   }),
 
   updateStatus: asyncHandler(async (req: Request, res: Response) => {
-    const appointment = await appointmentService.updateStatus(req.params.id, req.body.status);
+    if (!req.user) throw AppError.unauthorized();
+
+    let barberId: string | undefined;
+    if (req.user.role === 'BARBER') {
+      const barber = await barberService.getByUserId(req.user.id);
+      barberId = barber.id;
+    }
+
+    const appointment = await appointmentService.updateStatus(req.params.id, req.body.status, {
+      role: req.user.role,
+      barberId,
+    });
     res.status(200).json(appointment);
   }),
 };

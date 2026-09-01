@@ -1,4 +1,5 @@
 import { prisma } from '../config/prisma';
+import { AppError } from '../utils/AppError';
 
 interface DayWorkingHour {
   dayOfWeek: number;
@@ -48,6 +49,14 @@ export const businessHoursService = {
         reason: data.reason,
       },
     });
+  },
+
+  async getBlockedScheduleById(id: string) {
+    const blocked = await prisma.blockedSchedule.findUnique({ where: { id } });
+    if (!blocked) {
+      throw AppError.notFound('Bloqueio não encontrado');
+    }
+    return blocked;
   },
 
   async removeBlockedSchedule(id: string) {

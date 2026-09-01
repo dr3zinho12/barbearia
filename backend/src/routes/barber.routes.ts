@@ -2,12 +2,38 @@ import { Router } from 'express';
 import { barberController } from '../controllers/barber.controller';
 import { authenticate, authorize, optionalAuthenticate } from '../middlewares/auth';
 import { validate } from '../middlewares/validate';
-import { createBarberSchema, setBarberWorkingHoursSchema, updateBarberSchema } from '../validators/barber.validator';
+import {
+  createBarberSchema,
+  grantBarberLoginSchema,
+  setBarberWorkingHoursSchema,
+  updateBarberSchema,
+  updateOwnBarberSchema,
+} from '../validators/barber.validator';
+import { createBlockedScheduleSchema } from '../validators/businessHours.validator';
 import { idParamSchema } from '../validators/common.validator';
 
 const router = Router();
 
 router.get('/', optionalAuthenticate, barberController.list);
+
+router.get('/me', authenticate, authorize('BARBER'), barberController.me);
+router.put('/me', authenticate, authorize('BARBER'), validate({ body: updateOwnBarberSchema }), barberController.updateMe);
+router.get('/me/breaks', authenticate, authorize('BARBER'), barberController.myBreaks);
+router.post(
+  '/me/breaks',
+  authenticate,
+  authorize('BARBER'),
+  validate({ body: createBlockedScheduleSchema }),
+  barberController.createMyBreak,
+);
+router.delete(
+  '/me/breaks/:id',
+  authenticate,
+  authorize('BARBER'),
+  validate({ params: idParamSchema }),
+  barberController.removeMyBreak,
+);
+
 router.get('/:id', validate({ params: idParamSchema }), barberController.getById);
 
 router.post('/', authenticate, authorize('ADMIN'), validate({ body: createBarberSchema }), barberController.create);
@@ -26,6 +52,14 @@ router.put(
   authorize('ADMIN'),
   validate({ params: idParamSchema, body: setBarberWorkingHoursSchema }),
   barberController.setWorkingHours,
+);
+
+router.post(
+  '/:id/login',
+  authenticate,
+  authorize('ADMIN'),
+  validate({ params: idParamSchema, body: grantBarberLoginSchema }),
+  barberController.grantLogin,
 );
 
 export default router;

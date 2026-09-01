@@ -52,10 +52,24 @@ async function main() {
     ),
   );
 
+  console.log('Criando acessos de login dos barbeiros...');
+  const barberLoginPassword = await hashPassword('Barbeiro@123');
+  const barberUsersData = [
+    { name: 'João Silva', email: 'joao.silva@blackbluebarber.com', phone: '11977770001' },
+    { name: 'Lucas Almeida', email: 'lucas.almeida@blackbluebarber.com', phone: '11977770002' },
+    { name: 'Pedro Santos', email: 'pedro.santos@blackbluebarber.com', phone: '11977770003' },
+  ];
+  const barberUsers = await Promise.all(
+    barberUsersData.map((data) =>
+      prisma.user.create({ data: { ...data, password: barberLoginPassword, role: 'BARBER' } }),
+    ),
+  );
+
   console.log('Criando barbeiros...');
   const barbers = await Promise.all([
     prisma.barber.create({
       data: {
+        userId: barberUsers[0].id,
         name: 'João Silva',
         description: 'Especialista em cortes modernos e degradê, com mais de 8 anos de experiência.',
         specialties: ['Cortes modernos', 'Degradê', 'Desenhos'],
@@ -64,6 +78,7 @@ async function main() {
     }),
     prisma.barber.create({
       data: {
+        userId: barberUsers[1].id,
         name: 'Lucas Almeida',
         description: 'Referência em barba e cortes clássicos, unindo tradição e precisão.',
         specialties: ['Barba', 'Cortes clássicos', 'Navalha'],
@@ -72,6 +87,7 @@ async function main() {
     }),
     prisma.barber.create({
       data: {
+        userId: barberUsers[2].id,
         name: 'Pedro Santos',
         description: 'Versátil em cortes e sobrancelha, sempre atento às últimas tendências.',
         specialties: ['Sobrancelha', 'Cortes infantis', 'Coloração'],
@@ -111,31 +127,15 @@ async function main() {
   const plans = await Promise.all([
     prisma.plan.create({
       data: {
-        name: 'Plano Start',
+        name: 'Plano Black',
         description: 'Ideal para quem quer manter o visual em dia com economia.',
         price: 79.9,
-        benefits: ['2 cortes por mês', 'Agendamento prioritário', 'Perfil do cliente', 'Histórico de atendimentos'],
-      },
-    }),
-    prisma.plan.create({
-      data: {
-        name: 'Plano Premium',
-        description: 'Para quem não abre mão de estar sempre no estilo.',
-        price: 129.9,
-        benefits: ['4 cortes por mês', '2 serviços de barba', 'Agendamento prioritário', 'Desconto em serviços adicionais'],
-      },
-    }),
-    prisma.plan.create({
-      data: {
-        name: 'Plano Black',
-        description: 'Experiência completa e exclusiva Black Blue Barber.',
-        price: 179.9,
         benefits: [
-          'Cortes ilimitados dentro das regras da barbearia',
-          'Serviços de barba',
-          'Atendimento prioritário',
-          'Benefícios exclusivos',
-          'Descontos especiais',
+          '2 cortes por mês',
+          'Agendamento prioritário',
+          'Perfil do cliente',
+          'Histórico de atendimentos',
+          'Pode levar 2 amigos no mês',
         ],
       },
     }),
@@ -154,8 +154,8 @@ async function main() {
   await prisma.workingHour.createMany({ data: businessHours.map((h) => ({ ...h, barberId: null })) });
 
   console.log('Criando assinaturas...');
-  await prisma.subscription.create({ data: { clientId: clients[0].id, planId: plans[1].id, status: 'ACTIVE' } });
-  await prisma.subscription.create({ data: { clientId: clients[1].id, planId: plans[2].id, status: 'ACTIVE' } });
+  await prisma.subscription.create({ data: { clientId: clients[0].id, planId: plans[0].id, status: 'ACTIVE' } });
+  await prisma.subscription.create({ data: { clientId: clients[1].id, planId: plans[0].id, status: 'ACTIVE' } });
 
   console.log('Criando agendamentos de exemplo...');
   await prisma.appointment.create({
@@ -247,6 +247,7 @@ async function main() {
   console.log('Credenciais de demonstração (dados fictícios):');
   console.log(`Administrador: ${admin.email} / Admin@123`);
   console.log('Clientes: carlos.souza@example.com ... marcos.pereira@example.com / Cliente@123');
+  console.log('Barbeiros: joao.silva@blackbluebarber.com, lucas.almeida@... , pedro.santos@... / Barbeiro@123');
   console.log('----------------------------------------');
 }
 

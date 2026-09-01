@@ -1,10 +1,11 @@
+import { Role } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { AppError } from '../utils/AppError';
 import { verifyToken } from '../utils/jwt';
 
 export interface AuthenticatedUser {
   id: string;
-  role: 'CLIENT' | 'ADMIN';
+  role: Role;
 }
 
 declare global {
@@ -52,7 +53,7 @@ export function optionalAuthenticate(req: Request, _res: Response, next: NextFun
   next();
 }
 
-export function authorize(...roles: Array<'CLIENT' | 'ADMIN'>) {
+export function authorize(...roles: Role[]) {
   return (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.user) {
       throw AppError.unauthorized();

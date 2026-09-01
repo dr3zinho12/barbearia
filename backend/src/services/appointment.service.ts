@@ -1,4 +1,4 @@
-import { AppointmentStatus, Prisma } from '@prisma/client';
+import { AppointmentStatus, Prisma, Role } from '@prisma/client';
 import { business } from '../config/business';
 import { prisma } from '../config/prisma';
 import { AppError } from '../utils/AppError';
@@ -267,8 +267,13 @@ export const appointmentService = {
     });
   },
 
-  async updateStatus(id: string, status: AppointmentStatus) {
-    await this.getById(id);
+  async updateStatus(id: string, status: AppointmentStatus, requester?: { role: Role; barberId?: string }) {
+    const appointment = await this.getById(id);
+
+    if (requester?.role === 'BARBER' && appointment.barberId !== requester.barberId) {
+      throw AppError.forbidden('Você só pode atualizar agendamentos da sua própria agenda');
+    }
+
     return prisma.appointment.update({
       where: { id },
       data: { status },

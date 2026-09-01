@@ -1,5 +1,6 @@
 import { prisma } from '../config/prisma';
 import { AppError } from '../utils/AppError';
+import { hashPassword } from '../utils/hash';
 
 interface BarberInput {
   name: string;
@@ -7,6 +8,18 @@ interface BarberInput {
   photoUrl?: string;
   specialties: string[];
   active?: boolean;
+}
+
+interface OwnProfileInput {
+  description?: string;
+  photoUrl?: string;
+  specialties?: string[];
+}
+
+interface GrantLoginInput {
+  email: string;
+  phone: string;
+  password: string;
 }
 
 interface DayWorkingHour {
@@ -68,5 +81,42 @@ export const barberService = {
     ]);
 
     return prisma.workingHour.findMany({ where: { barberId }, orderBy: { dayOfWeek: 'asc' } });
+  },
+
+  async getByUserId(userId: string) {
+    const barber = await prisma.barber.findUnique({
+      where: { userId },
+      include: { workingHours: { orderBy: { dayOfWeek: 'asc' } } },
+    });
+    if (!barber) {
+      throw AppError.notFound('Perfil de barbeiro não encontrado para este usuário');
+    }
+    return barber;
+  },
+
+  async updateOwnProfile(userId: string, data: OwnProfileInput) {
+    const barber = await this.getByUserId(userId);
+    return prisma.barber.update({ where: { id: barber.id }, data });
+  },
+
+  async grantLogin(barberId: string, data: GrantLoginInput) {
+    const barber = await this.getById(barberId);
+
+    if (barber.userId) {
+      throw AppError.conflict('Este barbeiro já possui um acesso de login');
+    }
+
+    const existingEmail = await prisma.user.findUnique({ where: { email: data.email } });
+    if (existingEmail) {
+      throw AppError.conflict('Já existe uma conta cadastrada com este e-mail');
+    }
+
+    const hashed = await hashPassword(data.password);
+
+    const user = await prisma.user.create({
+      data: { name: barber.name, email: data.email, phone: data.phone, password: hashed, role: 'BARBER' },
+    });
+
+    return prisma.barber.update({ where: { id: barberId }, data: { userId: user.id } });
   },
 };

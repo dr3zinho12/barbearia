@@ -10,6 +10,7 @@ datasource db {
 enum Role {
   CLIENT
   ADMIN
+  BARBER
 }
 
 enum AppointmentStatus {
@@ -39,12 +40,14 @@ model User {
 
   appointments  Appointment[]
   subscriptions Subscription[]
+  barberProfile Barber?
 
   @@map("users")
 }
 
 model Barber {
   id          String   @id @default(uuid())
+  userId      String?  @unique
   name        String
   description String
   photoUrl    String?
@@ -53,6 +56,7 @@ model Barber {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  user             User?             @relation(fields: [userId], references: [id])
   workingHours     WorkingHour[]
   blockedSchedules BlockedSchedule[]
   appointments     Appointment[]
