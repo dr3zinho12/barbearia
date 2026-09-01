@@ -3,6 +3,9 @@ dist/
 build/
 .env
 .env.local
+.env.*.local
+*.pem
+*.key
 *.log
 npm-debug.log*
 .DS_Store
