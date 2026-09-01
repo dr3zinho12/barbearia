@@ -55,7 +55,7 @@ recuperação de senha.
 - Os horários exibidos respeitam o expediente do barbeiro (ou o expediente padrão da barbearia, na ausência de um
   expediente próprio) e excluem horários já ocupados ou bloqueados.
 - Cancelamento e remarcação por parte do cliente exigem uma antecedência mínima (2 horas por padrão, configurável em
-  `backend/src/config/business.ts`).
+  `backend/src/config/business.js`).
 - Um administrador pode cancelar/alterar o status de qualquer agendamento sem a restrição de antecedência mínima.
 
 ## Área administrativa (`/admin`)

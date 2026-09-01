@@ -8,8 +8,8 @@ API REST:
 ```
 ┌─────────────────────┐        HTTPS / JSON        ┌──────────────────────┐        SQL (Prisma)       ┌──────────────┐
 │   Front-End (SPA)    │ ─────────────────────────▶ │   Back-End (API)      │ ─────────────────────────▶ │  PostgreSQL  │
-│  React + TypeScript  │ ◀───────────────────────── │  Node.js + Express    │ ◀───────────────────────── │              │
-│  Vite + Tailwind CSS │        JWT no header        │  TypeScript + Prisma  │                            │              │
+│  React + JavaScript  │ ◀───────────────────────── │  Node.js + Express    │ ◀───────────────────────── │              │
+│  Vite + Tailwind CSS │        JWT no header        │  JavaScript + Prisma  │                            │              │
 └─────────────────────┘                              └──────────────────────┘                            └──────────────┘
 ```
 
@@ -62,10 +62,9 @@ src/
 ├── components/    → componentes reutilizáveis e sem regra de negócio própria
 ├── contexts/      → estado global de autenticação (AuthContext)
 ├── services/      → camada de comunicação com a API (um arquivo por recurso)
-├── types/         → tipos TypeScript compartilhados, espelhando o modelo de dados da API
 ├── hooks/         → hooks reutilizáveis
 ├── utils/         → formatação de moeda, data, telefone etc.
-└── config/        → identidade visual/textual da marca (brand.ts)
+└── config/        → identidade visual/textual da marca (brand.js)
 ```
 
 O roteamento usa `react-router-dom` com três grupos de rotas:
@@ -91,7 +90,7 @@ administrativas mesmo alterando a URL diretamente no navegador (a proteção rea
 ## Prevenção de conflitos de agendamento
 
 A regra mais crítica do sistema é impedir que dois agendamentos ocupem o mesmo horário do mesmo barbeiro. Isso é
-resolvido em `appointment.service.ts`:
+resolvido em `appointment.service.js`:
 
 1. Calcula-se o expediente do barbeiro para o dia da semana solicitado (horário próprio ou, na ausência dele, o
    horário padrão da barbearia).
@@ -105,7 +104,7 @@ resolvido em `appointment.service.ts`:
 
 | Decisão | Motivo |
 |---|---|
-| Prisma como ORM | Tipagem forte ponta a ponta, migrations versionadas, produtividade em projeto de curso técnico |
+| Prisma como ORM | API de consultas simples e legível, migrations versionadas, produtividade em projeto de curso técnico |
 | Zod para validação | Validação declarativa, reaproveitável entre criação/atualização, mensagens de erro claras |
 | JWT sem refresh token | Simplicidade adequada ao escopo acadêmico; token de 7 dias é suficiente para demonstração |
 | Token de redefinição de senha retornado pela API | Não há serviço de e-mail configurado no projeto; o token é devolvido diretamente na resposta, documentado como comportamento de demonstração |

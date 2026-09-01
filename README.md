@@ -4,8 +4,8 @@ Sistema web completo de agendamento e gestão para barbearia, desenvolvido como 
 Desenvolvimento de Sistemas.
 
 > O nome "Black Blue Barber" é configurável. Para renomear, edite apenas dois arquivos:
-> [`frontend/src/config/brand.ts`](frontend/src/config/brand.ts) (interface) e
-> [`backend/src/config/business.ts`](backend/src/config/business.ts) (API).
+> [`frontend/src/config/brand.js`](frontend/src/config/brand.js) (interface) e
+> [`backend/src/config/business.js`](backend/src/config/business.js) (API).
 
 ## Sumário
 
@@ -30,9 +30,9 @@ um dashboard.
 
 ## Tecnologias
 
-**Front-End**: React 18, TypeScript, Vite, Tailwind CSS, React Router, React Hook Form, Axios, React Hot Toast.
+**Front-End**: React 18, JavaScript (JSX), Vite, Tailwind CSS, React Router, React Hook Form, Axios, React Hot Toast.
 
-**Back-End**: Node.js, TypeScript, Express, Prisma ORM, Zod (validação), JWT (autenticação), bcrypt (hash de senha).
+**Back-End**: Node.js, JavaScript (módulos ES nativos), Express, Prisma ORM, Zod (validação), JWT (autenticação), bcrypt (hash de senha).
 
 **Banco de dados**: PostgreSQL.
 
@@ -43,7 +43,7 @@ um dashboard.
 Ver detalhamento completo em [`docs/arquitetura.md`](docs/arquitetura.md).
 
 ```
-Front-End (React/Vite) ⇄ API REST (Express/TypeScript) ⇄ PostgreSQL (via Prisma)
+Front-End (React/Vite) ⇄ API REST (Node.js/Express) ⇄ PostgreSQL (via Prisma)
 ```
 
 O back-end segue arquitetura em camadas: `routes → controllers → services → Prisma → PostgreSQL`, com middlewares de
@@ -54,7 +54,7 @@ autenticação (JWT), autorização por papel (`CLIENT`/`ADMIN`), validação (Z
 ```
 black-blue-barber/
 ├── backend/
-│   ├── prisma/           # schema.prisma e seed.ts
+│   ├── prisma/           # schema.prisma e seed.js
 │   ├── src/
 │   │   ├── config/       # env, prisma client, identidade do negócio
 │   │   ├── controllers/  # camada HTTP
@@ -71,7 +71,6 @@ black-blue-barber/
 │       ├── components/   # componentes reutilizáveis
 │       ├── contexts/     # AuthContext
 │       ├── services/     # camada de comunicação com a API
-│       ├── types/        # tipos TypeScript
 │       └── config/       # identidade de marca
 ├── docs/                 # documentação técnica e de apoio ao TCC
 ├── LICENSE

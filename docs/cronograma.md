@@ -24,7 +24,7 @@ O repositório foi estruturado para refletir etapas de desenvolvimento naturais,
 commits significativos:
 
 1. Configuração inicial do repositório (licença, gitignore)
-2. Estrutura inicial do Back-End (Node.js + TypeScript + Express)
+2. Estrutura inicial do Back-End (Node.js + Express)
 3. Configuração, utilitários e middlewares base do Back-End
 4. Modelagem do banco de dados com Prisma
 5. Autenticação (cadastro, login, perfil, recuperação de senha)

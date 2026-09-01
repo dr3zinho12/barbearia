@@ -27,8 +27,8 @@ Sugestão de estrutura para a defesa do TCC. Os tempos são aproximados.
 
 ## 6. Tecnologias utilizadas (2 min)
 
-- Front-End: React, TypeScript, Vite, Tailwind CSS, React Router, React Hook Form.
-- Back-End: Node.js, Express, TypeScript, Prisma, Zod, JWT, bcrypt.
+- Front-End: React, JavaScript, Vite, Tailwind CSS, React Router, React Hook Form.
+- Back-End: Node.js, Express, JavaScript, Prisma, Zod, JWT, bcrypt.
 - Banco de dados: PostgreSQL.
 
 ## 7. Arquitetura (2 min)

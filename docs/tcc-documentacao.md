@@ -48,7 +48,7 @@ Sugestões de tópicos a desenvolver (com citações de fontes bibliográficas a
 - Arquitetura cliente-servidor e APIs REST.
 - Bancos de dados relacionais e modelagem entidade-relacionamento.
 - Autenticação e autorização em aplicações web (JWT, hashing de senhas).
-- O ecossistema JavaScript/TypeScript moderno (Node.js, React).
+- O ecossistema JavaScript moderno (Node.js, React, módulos ES).
 - ORMs e mapeamento objeto-relacional (Prisma).
 
 ### 6. Desenvolvimento do trabalho
