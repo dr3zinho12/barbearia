@@ -8,12 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { appointmentsService } from '../../services/appointments.service';
 import { plansService } from '../../services/plans.service';
-import { formatCurrency, formatDateLong } from '../../utils/format';
-
-function todayDateString() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
+import { formatCurrency, formatDateLong, todayDateString } from '../../utils/format';
 
 function tomorrowDateString() {
   const date = new Date();

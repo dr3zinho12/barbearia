@@ -10,30 +10,9 @@ import { appointmentsService } from '../../services/appointments.service';
 import { barbersService } from '../../services/barbers.service';
 import { businessHoursService } from '../../services/businessHours.service';
 import { servicesService } from '../../services/services.service';
-import { formatCurrency, formatDuration } from '../../utils/format';
-
-function computeClosedWeekdays(barberHours, businessHours) {
-  const closed = [];
-  for (let day = 0; day < 7; day += 1) {
-    const specific = barberHours.find((h) => h.dayOfWeek === day);
-    const applicable = specific ?? businessHours.find((h) => h.dayOfWeek === day);
-    if (!applicable || applicable.closed) closed.push(day);
-  }
-  return closed;
-}
+import { computeClosedWeekdays, formatCurrency, formatDuration, maxDateString, todayDateString } from '../../utils/format';
 
 const STEPS = ['Serviço', 'Barbeiro', 'Data e horário', 'Confirmação'];
-
-function todayDateString() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
-
-function maxDateString() {
-  const date = new Date();
-  date.setDate(date.getDate() + 60);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
 
 export default function NovoAgendamento() {
   useDocumentTitle('Agendar horário');

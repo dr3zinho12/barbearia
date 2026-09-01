@@ -7,7 +7,6 @@ export function notFoundHandler(req, res) {
 
 // Middleware centralizado de tratamento de erros. Deve ser o último
 // middleware registrado na aplicação.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function errorHandler(err, _req, res, _next) {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({ message: err.message });

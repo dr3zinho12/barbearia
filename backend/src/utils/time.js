@@ -38,20 +38,6 @@ export function dateToDateString(date) {
   return date.toISOString().slice(0, 10);
 }
 
-export function isValidDateString(value) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(dateStringToDate(value).getTime());
-}
-
-export function isValidTimeString(value) {
-  return /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
-}
-
-export function combineDateAndTime(dateString, time) {
-  const [year, month, day] = dateString.split('-').map(Number);
-  const [hours, minutes] = time.split(':').map(Number);
-  return new Date(Date.UTC(year, month - 1, day, hours, minutes));
-}
-
 // Data de hoje no fuso horário local do servidor, no formato "YYYY-MM-DD".
 export function todayDateString() {
   const now = new Date();

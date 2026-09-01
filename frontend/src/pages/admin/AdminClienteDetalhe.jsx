@@ -30,7 +30,7 @@ export default function AdminClienteDetalhe() {
       });
   }
 
-  useEffect(loadClient, [id]);
+  useEffect(loadClient, [id, navigate]);
 
   async function handleToggleActive() {
     if (!client) return;

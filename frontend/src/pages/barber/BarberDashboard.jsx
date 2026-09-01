@@ -12,14 +12,9 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { extractErrorMessage } from '../../services/api';
 import { appointmentsService } from '../../services/appointments.service';
 import { barbersService } from '../../services/barbers.service';
-import { formatCurrency, formatDate } from '../../utils/format';
+import { formatCurrency, formatDate, todayDateString } from '../../utils/format';
 
 const STATUS_OPTIONS = ['SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELED', 'NO_SHOW'];
-
-function todayDateString() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
 
 function defaultBreakTimes() {
   const now = new Date();

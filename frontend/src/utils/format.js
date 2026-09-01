@@ -57,3 +57,28 @@ const STATUS_LABELS = {
 export function statusLabel(status) {
   return STATUS_LABELS[status] ?? status;
 }
+
+// Data de hoje no fuso horário local do navegador, no formato "YYYY-MM-DD".
+export function todayDateString() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+// Último dia permitido para agendamento (mesmo horizonte configurado no back-end).
+export function maxDateString() {
+  const date = new Date();
+  date.setDate(date.getDate() + 60);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+// Dias da semana (0=domingo .. 6=sábado) em que um barbeiro não atende,
+// combinando o expediente próprio dele com o horário padrão da barbearia.
+export function computeClosedWeekdays(barberHours, businessHours) {
+  const closed = [];
+  for (let day = 0; day < 7; day += 1) {
+    const specific = barberHours.find((h) => h.dayOfWeek === day);
+    const applicable = specific ?? businessHours.find((h) => h.dayOfWeek === day);
+    if (!applicable || applicable.closed) closed.push(day);
+  }
+  return closed;
+}
