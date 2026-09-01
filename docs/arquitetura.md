@@ -2,7 +2,7 @@
 
 ## Visão geral
 
-O Black Blue Barber é uma aplicação web full stack dividida em dois projetos independentes que se comunicam por uma
+O Royal Cut é uma aplicação web full stack dividida em dois projetos independentes que se comunicam por uma
 API REST:
 
 ```

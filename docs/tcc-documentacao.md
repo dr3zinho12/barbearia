@@ -7,7 +7,7 @@ antes da entrega.
 
 ## Elementos pré-textuais
 
-- **Capa**: instituição, curso, título do trabalho ("Black Blue Barber: Sistema Web de Agendamento e Gestão para
+- **Capa**: instituição, curso, título do trabalho ("Royal Cut: Sistema Web de Agendamento e Gestão para
   Barbearia"), autor(es), cidade e ano.
 - **Folha de rosto**: título, natureza do trabalho (TCC do curso técnico em Desenvolvimento de Sistemas), autor(es),
   orientador(a), instituição, cidade e ano.

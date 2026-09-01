@@ -31,7 +31,7 @@ export function SidebarShell({ title, navItems }) {
       >
         <Link to="/" className="flex items-center gap-2 border-b border-brand-border px-6 py-5">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-blue-500 font-display text-lg font-bold text-white">
-            B
+            R
           </span>
           <span className="font-display text-base font-bold text-white">{brand.name}</span>
         </Link>

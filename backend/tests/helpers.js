@@ -23,7 +23,7 @@ export async function registerClient(name = 'Cliente Teste') {
 
 export async function loginAdmin() {
   const response = await request(app).post('/api/auth/login').send({
-    email: 'admin@blackbluebarber.com',
+    email: 'admin@royalcut.com',
     password: 'Admin@123',
   });
 

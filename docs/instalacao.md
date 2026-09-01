@@ -104,7 +104,7 @@ Utilize as credenciais de demonstração (criadas pelo seed):
 
 | Perfil | E-mail | Senha |
 |---|---|---|
-| Administrador | admin@blackbluebarber.com | Admin@123 |
+| Administrador | admin@royalcut.com | Admin@123 |
 | Cliente | carlos.souza@example.com | Cliente@123 |
 
 ## 6. Rodar os testes automatizados do back-end

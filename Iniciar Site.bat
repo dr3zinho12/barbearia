@@ -1,10 +1,10 @@
 @echo off
 chcp 65001 >nul
-title Black Blue Barber - Iniciando...
+title Royal Cut - Iniciando...
 color 0B
 
 echo ============================================================
-echo    BLACK BLUE BARBER - Iniciando o sistema
+echo    ROYAL CUT - Iniciando o sistema
 echo ============================================================
 echo.
 
@@ -41,12 +41,12 @@ if not exist "%~dp0frontend\node_modules" (
 )
 
 echo [2/4] Iniciando o back-end (API)...
-start "Black Blue Barber - BACK-END (nao feche)" cmd /k "cd /d "%~dp0backend" && npm run dev"
+start "Royal Cut - BACK-END (nao feche)" cmd /k "cd /d "%~dp0backend" && npm run dev"
 
 timeout /t 4 /nobreak >nul
 
 echo [3/4] Iniciando o front-end (site)...
-start "Black Blue Barber - FRONT-END (nao feche)" cmd /k "cd /d "%~dp0frontend" && npm run dev"
+start "Royal Cut - FRONT-END (nao feche)" cmd /k "cd /d "%~dp0frontend" && npm run dev"
 
 echo [4/4] Aguardando o site ficar pronto...
 timeout /t 6 /nobreak >nul

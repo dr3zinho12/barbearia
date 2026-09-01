@@ -29,7 +29,7 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-blue-500 font-display text-lg font-bold text-white shadow-glow">
-            B
+            R
           </span>
           <span className="font-display text-lg font-bold tracking-tight text-white">{brand.name}</span>
         </Link>

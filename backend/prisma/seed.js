@@ -27,7 +27,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       name: 'Administrador',
-      email: 'admin@blackbluebarber.com',
+      email: 'admin@royalcut.com',
       password: adminPassword,
       phone: '11999990000',
       role: 'ADMIN',
@@ -55,9 +55,9 @@ async function main() {
   console.log('Criando acessos de login dos barbeiros...');
   const barberLoginPassword = await hashPassword('Barbeiro@123');
   const barberUsersData = [
-    { name: 'André', email: 'andre@blackbluebarber.com', phone: '11977770001' },
-    { name: 'Davi', email: 'davi@blackbluebarber.com', phone: '11977770002' },
-    { name: 'Wendel Samuel', email: 'wendel.samuel@blackbluebarber.com', phone: '11977770003' },
+    { name: 'André', email: 'andre@royalcut.com', phone: '11977770001' },
+    { name: 'Davi', email: 'davi@royalcut.com', phone: '11977770002' },
+    { name: 'Wendel Samuel', email: 'wendel.samuel@royalcut.com', phone: '11977770003' },
   ];
   const barberUsers = await Promise.all(
     barberUsersData.map((data) =>
@@ -116,7 +116,7 @@ async function main() {
     prisma.service.create({
       data: {
         name: 'Combo Completo',
-        description: 'Corte + Barba + Sobrancelha: experiência completa Black Blue Barber.',
+        description: 'Corte + Barba + Sobrancelha: experiência completa Royal Cut.',
         price: 65,
         duration: 60,
       },
@@ -247,7 +247,7 @@ async function main() {
   console.log('Credenciais de demonstração (dados fictícios):');
   console.log(`Administrador: ${admin.email} / Admin@123`);
   console.log('Clientes: carlos.souza@example.com ... marcos.pereira@example.com / Cliente@123');
-  console.log('Barbeiros: andre@blackbluebarber.com, davi@..., wendel.samuel@... / Barbeiro@123');
+  console.log('Barbeiros: andre@royalcut.com, davi@..., wendel.samuel@... / Barbeiro@123');
   console.log('----------------------------------------');
 }
 

@@ -1,9 +1,9 @@
-# Black Blue Barber
+# Royal Cut
 
 Sistema web completo de agendamento e gestão para barbearia, desenvolvido como projeto de TCC do curso técnico em
 Desenvolvimento de Sistemas.
 
-> O nome "Black Blue Barber" é configurável. Para renomear, edite apenas dois arquivos:
+> O nome "Royal Cut" é configurável. Para renomear, edite apenas dois arquivos:
 > [`frontend/src/config/brand.js`](frontend/src/config/brand.js) (interface) e
 > [`backend/src/config/business.js`](backend/src/config/business.js) (API).
 
@@ -111,12 +111,12 @@ Todos os dados abaixo são **fictícios**, criados pelo script de seed (`npm run
 
 | Perfil | E-mail | Senha |
 |---|---|---|
-| Administrador | admin@blackbluebarber.com | Admin@123 |
+| Administrador | admin@royalcut.com | Admin@123 |
 | Cliente (exemplo) | carlos.souza@example.com | Cliente@123 |
 | Cliente (exemplo) | rafael.lima@example.com | Cliente@123 |
-| Barbeiro (exemplo) | joao.silva@blackbluebarber.com | Barbeiro@123 |
-| Barbeiro (exemplo) | lucas.almeida@blackbluebarber.com | Barbeiro@123 |
-| Barbeiro (exemplo) | pedro.santos@blackbluebarber.com | Barbeiro@123 |
+| Barbeiro (exemplo) | andre@royalcut.com | Barbeiro@123 |
+| Barbeiro (exemplo) | davi@royalcut.com | Barbeiro@123 |
+| Barbeiro (exemplo) | wendel.samuel@royalcut.com | Barbeiro@123 |
 
 > ⚠️ Rodar `npm run seed` **apaga e recria todos os dados** do banco (volta ao estado fictício inicial). Use com
 > cuidado se você já tiver personalizado clientes, planos, barbeiros ou contas de administrador além dos padrões.

@@ -1,7 +1,7 @@
 {
   "name": "black-blue-barber-frontend",
   "version": "1.0.0",
-  "description": "Front-End do sistema Black Blue Barber",
+  "description": "Front-End do sistema Royal Cut",
   "private": true,
   "type": "module",
   "scripts": {
