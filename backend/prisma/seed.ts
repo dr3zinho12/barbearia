@@ -55,9 +55,9 @@ async function main() {
   console.log('Criando acessos de login dos barbeiros...');
   const barberLoginPassword = await hashPassword('Barbeiro@123');
   const barberUsersData = [
-    { name: 'João Silva', email: 'joao.silva@blackbluebarber.com', phone: '11977770001' },
-    { name: 'Lucas Almeida', email: 'lucas.almeida@blackbluebarber.com', phone: '11977770002' },
-    { name: 'Pedro Santos', email: 'pedro.santos@blackbluebarber.com', phone: '11977770003' },
+    { name: 'André', email: 'andre@blackbluebarber.com', phone: '11977770001' },
+    { name: 'Davi', email: 'davi@blackbluebarber.com', phone: '11977770002' },
+    { name: 'Wendel Samuel', email: 'wendel.samuel@blackbluebarber.com', phone: '11977770003' },
   ];
   const barberUsers = await Promise.all(
     barberUsersData.map((data) =>
@@ -70,7 +70,7 @@ async function main() {
     prisma.barber.create({
       data: {
         userId: barberUsers[0].id,
-        name: 'João Silva',
+        name: 'André',
         description: 'Especialista em cortes modernos e degradê, com mais de 8 anos de experiência.',
         specialties: ['Cortes modernos', 'Degradê', 'Desenhos'],
         active: true,
@@ -79,7 +79,7 @@ async function main() {
     prisma.barber.create({
       data: {
         userId: barberUsers[1].id,
-        name: 'Lucas Almeida',
+        name: 'Davi',
         description: 'Referência em barba e cortes clássicos, unindo tradição e precisão.',
         specialties: ['Barba', 'Cortes clássicos', 'Navalha'],
         active: true,
@@ -88,7 +88,7 @@ async function main() {
     prisma.barber.create({
       data: {
         userId: barberUsers[2].id,
-        name: 'Pedro Santos',
+        name: 'Wendel Samuel',
         description: 'Versátil em cortes e sobrancelha, sempre atento às últimas tendências.',
         specialties: ['Sobrancelha', 'Cortes infantis', 'Coloração'],
         active: true,
@@ -247,7 +247,7 @@ async function main() {
   console.log('Credenciais de demonstração (dados fictícios):');
   console.log(`Administrador: ${admin.email} / Admin@123`);
   console.log('Clientes: carlos.souza@example.com ... marcos.pereira@example.com / Cliente@123');
-  console.log('Barbeiros: joao.silva@blackbluebarber.com, lucas.almeida@... , pedro.santos@... / Barbeiro@123');
+  console.log('Barbeiros: andre@blackbluebarber.com, davi@..., wendel.samuel@... / Barbeiro@123');
   console.log('----------------------------------------');
 }
 

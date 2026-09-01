@@ -53,8 +53,16 @@ export const barberService = {
   },
 
   async update(id: string, data: Partial<BarberInput>) {
-    await this.getById(id);
-    return prisma.barber.update({ where: { id }, data });
+    const existing = await this.getById(id);
+    const updated = await prisma.barber.update({ where: { id }, data });
+
+    // Mantém o nome de exibição da conta de login sincronizado com o
+    // nome público do barbeiro, quando houver uma conta vinculada.
+    if (data.name && existing.userId) {
+      await prisma.user.update({ where: { id: existing.userId }, data: { name: data.name } });
+    }
+
+    return updated;
   },
 
   async remove(id: string) {
