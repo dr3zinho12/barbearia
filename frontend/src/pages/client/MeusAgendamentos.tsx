@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Calendar } from '../../components/Calendar';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { EmptyState } from '../../components/EmptyState';
 import { CalendarIcon } from '../../components/icons';
@@ -9,7 +10,9 @@ import { StatusBadge } from '../../components/StatusBadge';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { extractErrorMessage } from '../../services/api';
 import { appointmentsService } from '../../services/appointments.service';
-import { Appointment, AvailabilitySlot } from '../../types';
+import { barbersService } from '../../services/barbers.service';
+import { businessHoursService } from '../../services/businessHours.service';
+import { Appointment, AvailabilitySlot, WorkingHour } from '../../types';
 import { formatCurrency, formatDateLong } from '../../utils/format';
 
 function todayDateString(): string {
@@ -23,12 +26,41 @@ function maxDateString(): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
+function computeClosedWeekdays(barberHours: WorkingHour[], businessHours: WorkingHour[]): number[] {
+  const closed: number[] = [];
+  for (let day = 0; day < 7; day += 1) {
+    const specific = barberHours.find((h) => h.dayOfWeek === day);
+    const applicable = specific ?? businessHours.find((h) => h.dayOfWeek === day);
+    if (!applicable || applicable.closed) closed.push(day);
+  }
+  return closed;
+}
+
 function RescheduleModal({ appointment, onClose, onRescheduled }: { appointment: Appointment; onClose: () => void; onRescheduled: () => void }) {
   const [date, setDate] = useState('');
   const [slots, setSlots] = useState<AvailabilitySlot[] | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(null);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [businessHours, setBusinessHours] = useState<WorkingHour[]>([]);
+  const [barberWorkingHours, setBarberWorkingHours] = useState<WorkingHour[]>([]);
+  const today = useMemo(() => new Date(), []);
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+
+  useEffect(() => {
+    businessHoursService.get().then(setBusinessHours).catch(() => setBusinessHours([]));
+    barbersService
+      .getById(appointment.barberId)
+      .then((barber) => setBarberWorkingHours(barber.workingHours ?? []))
+      .catch(() => setBarberWorkingHours([]));
+  }, [appointment.barberId]);
+
+  const closedWeekdays = useMemo(
+    () => computeClosedWeekdays(barberWorkingHours, businessHours),
+    [barberWorkingHours, businessHours],
+  );
 
   useEffect(() => {
     setSlots(null);
@@ -76,17 +108,19 @@ function RescheduleModal({ appointment, onClose, onRescheduled }: { appointment:
       }
     >
       <div>
-        <label className="label" htmlFor="reschedule-date">
-          Nova data
-        </label>
-        <input
-          id="reschedule-date"
-          type="date"
-          className="input"
-          min={todayDateString()}
-          max={maxDateString()}
+        <p className="label">Nova data</p>
+        <Calendar
           value={date}
-          onChange={(event) => setDate(event.target.value)}
+          onChange={setDate}
+          minDate={todayDateString()}
+          maxDate={maxDateString()}
+          closedWeekdays={closedWeekdays}
+          viewYear={viewYear}
+          viewMonth={viewMonth}
+          onViewChange={(year, month) => {
+            setViewYear(year);
+            setViewMonth(month);
+          }}
         />
       </div>
 

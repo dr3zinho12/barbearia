@@ -1,15 +1,27 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { Calendar } from '../../components/Calendar';
 import { EmptyState } from '../../components/EmptyState';
 import { Spinner } from '../../components/Spinner';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { extractErrorMessage } from '../../services/api';
 import { appointmentsService } from '../../services/appointments.service';
 import { barbersService } from '../../services/barbers.service';
+import { businessHoursService } from '../../services/businessHours.service';
 import { servicesService } from '../../services/services.service';
-import { AvailabilitySlot, Barber, Service } from '../../types';
+import { AvailabilitySlot, Barber, Service, WorkingHour } from '../../types';
 import { formatCurrency, formatDuration } from '../../utils/format';
+
+function computeClosedWeekdays(barberHours: WorkingHour[], businessHours: WorkingHour[]): number[] {
+  const closed: number[] = [];
+  for (let day = 0; day < 7; day += 1) {
+    const specific = barberHours.find((h) => h.dayOfWeek === day);
+    const applicable = specific ?? businessHours.find((h) => h.dayOfWeek === day);
+    if (!applicable || applicable.closed) closed.push(day);
+  }
+  return closed;
+}
 
 const STEPS = ['Serviço', 'Barbeiro', 'Data e horário', 'Confirmação'];
 
@@ -42,10 +54,31 @@ export default function NovoAgendamento() {
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [businessHours, setBusinessHours] = useState<WorkingHour[]>([]);
+  const [barberWorkingHours, setBarberWorkingHours] = useState<WorkingHour[]>([]);
+  const today = useMemo(() => new Date(), []);
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+
   useEffect(() => {
     servicesService.list().then(setServices).catch(() => setServices([]));
     barbersService.list().then(setBarbers).catch(() => setBarbers([]));
+    businessHoursService.get().then(setBusinessHours).catch(() => setBusinessHours([]));
   }, []);
+
+  useEffect(() => {
+    setBarberWorkingHours([]);
+    if (!selectedBarberId) return;
+    barbersService
+      .getById(selectedBarberId)
+      .then((barber) => setBarberWorkingHours(barber.workingHours ?? []))
+      .catch(() => setBarberWorkingHours([]));
+  }, [selectedBarberId]);
+
+  const closedWeekdays = useMemo(
+    () => computeClosedWeekdays(barberWorkingHours, businessHours),
+    [barberWorkingHours, businessHours],
+  );
 
   const selectedService = useMemo(() => services?.find((s) => s.id === selectedServiceId) ?? null, [services, selectedServiceId]);
   const selectedBarber = useMemo(() => barbers?.find((b) => b.id === selectedBarberId) ?? null, [barbers, selectedBarberId]);
@@ -191,18 +224,20 @@ export default function NovoAgendamento() {
         {step === 2 && (
           <div>
             <h2 className="text-lg font-semibold text-white">Escolha a data e o horário</h2>
-            <div className="mt-5">
-              <label className="label" htmlFor="date">
-                Data
-              </label>
-              <input
-                id="date"
-                type="date"
-                className="input max-w-xs"
-                min={todayDateString()}
-                max={maxDateString()}
+            <div className="mt-5 max-w-sm">
+              <p className="label">Data</p>
+              <Calendar
                 value={selectedDate}
-                onChange={(event) => setSelectedDate(event.target.value)}
+                onChange={setSelectedDate}
+                minDate={todayDateString()}
+                maxDate={maxDateString()}
+                closedWeekdays={closedWeekdays}
+                viewYear={viewYear}
+                viewMonth={viewMonth}
+                onViewChange={(year, month) => {
+                  setViewYear(year);
+                  setViewMonth(month);
+                }}
               />
             </div>
 
