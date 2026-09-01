@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EmptyState } from '../../components/EmptyState';
-import { CalendarIcon } from '../../components/icons';
+import { CalendarIcon, MessageIcon } from '../../components/icons';
 import { Spinner } from '../../components/Spinner';
 import { StatusBadge } from '../../components/StatusBadge';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,11 +16,18 @@ function todayDateString(): string {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 }
 
+function tomorrowDateString(): string {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
 export default function ClientDashboard() {
   useDocumentTitle('Minha área');
   const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[] | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [isReminderDismissed, setIsReminderDismissed] = useState(false);
 
   useEffect(() => {
     appointmentsService.listMine().then(setAppointments).catch(() => setAppointments([]));
@@ -32,12 +39,46 @@ export default function ClientDashboard() {
     ?.filter((a) => (a.status === 'SCHEDULED' || a.status === 'CONFIRMED') && a.date.slice(0, 10) >= today)
     .sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime))[0];
 
+  const isReminderDue = !!nextAppointment && nextAppointment.date.slice(0, 10) === tomorrowDateString();
+  const firstName = user?.name.split(' ')[0] ?? '';
+  const reminderMessage = nextAppointment
+    ? `Olá, ${firstName}! Passando para confirmar seu horário de amanhã às ${nextAppointment.startTime}, para ${nextAppointment.service?.name} com ${nextAppointment.barber?.name}. Vai conseguir vir, ou prefere cancelar?`
+    : '';
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-white">Olá, {user?.name.split(' ')[0]}!</h1>
         <p className="mt-1 text-sm text-slate-400">Bem-vindo(a) de volta à sua área exclusiva.</p>
       </div>
+
+      {isReminderDue && !isReminderDismissed && (
+        <div className="card border-brand-blue-400/60 p-5">
+          <div className="flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-blue-500/15 text-brand-blue-300">
+              <MessageIcon className="h-5 w-5" />
+            </span>
+            <div className="flex-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-blue-300">
+                Lembrete de amanhã · simulação de mensagem por WhatsApp
+              </p>
+              <p className="mt-2 rounded-xl rounded-tl-none bg-brand-night p-3 text-sm text-slate-200">{reminderMessage}</p>
+              <p className="mt-2 text-xs text-slate-500">
+                Em um ambiente de produção, esta mensagem seria enviada de verdade para o seu WhatsApp cadastrado, um dia
+                antes do atendimento.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button type="button" className="btn-secondary" onClick={() => setIsReminderDismissed(true)}>
+                  Tudo certo, vou comparecer
+                </button>
+                <Link to="/cliente/agendamentos" className="btn-ghost">
+                  Preciso cancelar ou remarcar
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="card p-6 lg:col-span-2">
