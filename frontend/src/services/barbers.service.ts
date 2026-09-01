@@ -93,4 +93,9 @@ export const barbersService = {
   async removeMyBreak(id: string): Promise<void> {
     await api.delete(`/barbers/me/breaks/${id}`);
   },
+
+  async updateMyWorkingHours(workingHours: DayWorkingHourPayload[]): Promise<WorkingHour[]> {
+    const { data } = await api.put<WorkingHour[]>('/barbers/me/working-hours', { workingHours });
+    return data;
+  },
 };

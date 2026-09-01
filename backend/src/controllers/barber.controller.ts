@@ -67,6 +67,13 @@ export const barberController = {
     res.status(201).json(breakEntry);
   }),
 
+  updateMyWorkingHours: asyncHandler(async (req: Request, res: Response) => {
+    if (!req.user) throw AppError.unauthorized();
+    const barber = await barberService.getByUserId(req.user.id);
+    const workingHours = await barberService.setWorkingHours(barber.id, req.body.workingHours);
+    res.status(200).json(workingHours);
+  }),
+
   removeMyBreak: asyncHandler(async (req: Request, res: Response) => {
     if (!req.user) throw AppError.unauthorized();
     const barber = await barberService.getByUserId(req.user.id);

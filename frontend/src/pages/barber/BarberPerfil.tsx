@@ -6,8 +6,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { extractErrorMessage } from '../../services/api';
 import { authService } from '../../services/auth.service';
-import { barbersService } from '../../services/barbers.service';
+import { barbersService, DayWorkingHourPayload } from '../../services/barbers.service';
 import { Barber } from '../../types';
+import { weekdayLabel } from '../../utils/format';
 
 interface ProfileForm {
   description: string;
@@ -21,12 +22,21 @@ interface PasswordForm {
   confirmPassword: string;
 }
 
+const DEFAULT_WORKING_HOURS: DayWorkingHourPayload[] = Array.from({ length: 7 }, (_, dayOfWeek) => ({
+  dayOfWeek,
+  startTime: dayOfWeek === 0 ? '00:00' : '09:00',
+  endTime: dayOfWeek === 0 ? '00:00' : '19:00',
+  closed: dayOfWeek === 0,
+}));
+
 export default function BarberPerfil() {
   useDocumentTitle('Meu perfil');
   const { user } = useAuth();
   const [barber, setBarber] = useState<Barber | null>(null);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [workingHours, setWorkingHours] = useState<DayWorkingHourPayload[] | null>(null);
+  const [isSavingHours, setIsSavingHours] = useState(false);
 
   const profileForm = useForm<ProfileForm>();
   const passwordForm = useForm<PasswordForm>();
@@ -39,9 +49,36 @@ export default function BarberPerfil() {
         specialties: data.specialties.join(', '),
         photoUrl: data.photoUrl ?? '',
       });
+
+      if (data.workingHours && data.workingHours.length === 7) {
+        setWorkingHours(
+          [...data.workingHours]
+            .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
+            .map((h) => ({ dayOfWeek: h.dayOfWeek, startTime: h.startTime, endTime: h.endTime, closed: h.closed })),
+        );
+      } else {
+        setWorkingHours(DEFAULT_WORKING_HOURS);
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function updateDay(dayOfWeek: number, changes: Partial<DayWorkingHourPayload>) {
+    setWorkingHours((current) => current?.map((day) => (day.dayOfWeek === dayOfWeek ? { ...day, ...changes } : day)) ?? current);
+  }
+
+  async function handleSaveHours() {
+    if (!workingHours) return;
+    setIsSavingHours(true);
+    try {
+      await barbersService.updateMyWorkingHours(workingHours);
+      toast.success('Expediente atualizado com sucesso!');
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    } finally {
+      setIsSavingHours(false);
+    }
+  }
 
   async function onSubmitProfile(data: ProfileForm) {
     setIsSavingProfile(true);
@@ -150,6 +187,56 @@ export default function BarberPerfil() {
             {isSavingProfile ? 'Salvando...' : 'Salvar alterações'}
           </button>
         </form>
+      </div>
+
+      <div className="card p-6">
+        <h2 className="text-lg font-semibold text-white">Meu expediente semanal</h2>
+        <p className="mt-1 text-sm text-slate-400">
+          Defina os dias e horários em que você atende. Isso substitui o horário padrão da barbearia para você.
+        </p>
+
+        {!workingHours ? (
+          <div className="mt-6 flex justify-center">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="mt-5 space-y-3">
+            {workingHours.map((day) => (
+              <div key={day.dayOfWeek} className="flex flex-wrap items-center gap-3 rounded-lg border border-brand-border bg-brand-night p-3">
+                <span className="w-20 text-sm font-medium text-slate-200">{weekdayLabel(day.dayOfWeek)}</span>
+                <label className="flex items-center gap-1.5 text-xs text-slate-400">
+                  <input
+                    type="checkbox"
+                    checked={day.closed}
+                    onChange={(event) => updateDay(day.dayOfWeek, { closed: event.target.checked })}
+                    className="h-4 w-4 rounded border-brand-border bg-brand-night"
+                  />
+                  Não atendo
+                </label>
+                {!day.closed && (
+                  <>
+                    <input
+                      type="time"
+                      className="input py-1.5 text-sm"
+                      value={day.startTime}
+                      onChange={(event) => updateDay(day.dayOfWeek, { startTime: event.target.value })}
+                    />
+                    <span className="text-slate-500">até</span>
+                    <input
+                      type="time"
+                      className="input py-1.5 text-sm"
+                      value={day.endTime}
+                      onChange={(event) => updateDay(day.dayOfWeek, { endTime: event.target.value })}
+                    />
+                  </>
+                )}
+              </div>
+            ))}
+            <button type="button" className="btn-primary mt-2" onClick={handleSaveHours} disabled={isSavingHours}>
+              {isSavingHours ? 'Salvando...' : 'Salvar expediente'}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="card p-6">

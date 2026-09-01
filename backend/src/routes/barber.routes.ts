@@ -33,6 +33,13 @@ router.delete(
   validate({ params: idParamSchema }),
   barberController.removeMyBreak,
 );
+router.put(
+  '/me/working-hours',
+  authenticate,
+  authorize('BARBER'),
+  validate({ body: setBarberWorkingHoursSchema }),
+  barberController.updateMyWorkingHours,
+);
 
 router.get('/:id', validate({ params: idParamSchema }), barberController.getById);
 
