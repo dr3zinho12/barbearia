@@ -79,6 +79,10 @@ black-blue-barber/
 
 ## Instalação e execução
 
+> **Atalho para Windows**: depois de instalar tudo pela primeira vez (passos abaixo), basta dar duplo clique em
+> [`Iniciar Site.bat`](Iniciar%20Site.bat), na raiz do projeto. Ele confere se o banco de dados está no ar, liga o
+> back-end e o front-end automaticamente, e abre o site sozinho no navegador.
+
 Guia completo e detalhado em [`docs/instalacao.md`](docs/instalacao.md). Resumo:
 
 ```bash
