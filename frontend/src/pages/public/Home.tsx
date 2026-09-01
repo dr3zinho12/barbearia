@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BarberIllustration } from '../../components/BarberIllustration';
 import { EmptyState } from '../../components/EmptyState';
-import { ScissorsIcon } from '../../components/icons';
 import { Spinner } from '../../components/Spinner';
 import { brand } from '../../config/brand';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
@@ -45,9 +45,7 @@ export default function Home() {
           <div className="relative mx-auto aspect-square w-full max-w-md">
             <div className="absolute inset-0 rounded-3xl border border-brand-border bg-gradient-to-br from-brand-surface to-brand-night shadow-2xl">
               <div className="flex h-full flex-col items-center justify-center gap-6 p-8">
-                <div className="flex h-28 w-28 items-center justify-center rounded-full bg-brand-blue-500/15 text-brand-blue-300">
-                  <ScissorsIcon className="h-14 w-14" />
-                </div>
+                <BarberIllustration className="h-40 w-40" />
                 <div className="text-center">
                   <p className="font-display text-2xl font-bold text-white">Estilo é a nossa arte</p>
                   <p className="mt-2 text-sm text-slate-400">
