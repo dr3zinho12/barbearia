@@ -12,6 +12,20 @@
 - Recuperação de senha (fluxo completo, com token de demonstração retornado pela API na ausência de servidor de
   e-mail).
 
+## Área do barbeiro (`/barbeiro`)
+
+Papel `BARBER`, com login próprio concedido pelo administrador (um barbeiro cadastrado só tem acesso ao painel depois
+que um administrador cria as credenciais dele em Barbeiros → "Conceder acesso").
+
+- **Minha agenda**: lista os próprios agendamentos por data, com opção de atualizar o status (confirmar, concluir,
+  marcar não comparecimento) diretamente — restrito aos próprios atendimentos.
+- **Horário de almoço / indisponibilidade**: o barbeiro pode bloquear um intervalo de horário (ex.: almoço), o que
+  remove esses horários da disponibilidade de agendamento imediatamente, e removê-lo quando quiser voltar a ficar
+  disponível.
+- **Meu perfil**: o barbeiro edita sua própria descrição e especialidades/diferenciais (exibidas publicamente na
+  página de barbeiros do site) e altera sua senha. Nome e status ativo/inativo continuam sob controle do
+  administrador.
+
 ## Área do cliente (`/cliente`)
 
 - **Dashboard**: saudação personalizada, próximo atendimento agendado, atalhos para agendamento, histórico e plano
@@ -39,7 +53,8 @@
   assinaturas ativas, faturamento estimado (soma dos atendimentos concluídos) e ranking dos serviços mais agendados.
 - **Clientes**: busca, paginação, visualização de detalhes (histórico completo e plano contratado), edição de dados e
   desativação/reativação de conta.
-- **Barbeiros**: CRUD completo, especialidades, foto (URL) e configuração individual do expediente semanal.
+- **Barbeiros**: CRUD completo, especialidades, foto (URL), configuração individual do expediente semanal e concessão
+  de acesso de login (papel `BARBER`) para que o barbeiro use sua própria área.
 - **Serviços**: CRUD completo com nome, descrição, preço, duração e status.
 - **Agendamentos**: listagem com filtros (data, barbeiro, cliente, serviço, status), paginação e alteração manual de
   status.

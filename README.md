@@ -102,10 +102,6 @@ npm install
 npm run dev                   # http://localhost:5173
 ```
 
-> **Importante**: este ambiente de desenvolvimento não possui Node.js nem PostgreSQL instalados, portanto o código
-> não pôde ser executado/testado localmente durante a criação deste repositório. Siga o guia de instalação em uma
-> máquina com Node.js e PostgreSQL disponíveis antes da apresentação.
-
 ## Credenciais de demonstração
 
 Todos os dados abaixo são **fictícios**, criados pelo script de seed (`npm run seed`).
@@ -115,6 +111,12 @@ Todos os dados abaixo são **fictícios**, criados pelo script de seed (`npm run
 | Administrador | admin@blackbluebarber.com | Admin@123 |
 | Cliente (exemplo) | carlos.souza@example.com | Cliente@123 |
 | Cliente (exemplo) | rafael.lima@example.com | Cliente@123 |
+| Barbeiro (exemplo) | joao.silva@blackbluebarber.com | Barbeiro@123 |
+| Barbeiro (exemplo) | lucas.almeida@blackbluebarber.com | Barbeiro@123 |
+| Barbeiro (exemplo) | pedro.santos@blackbluebarber.com | Barbeiro@123 |
+
+> ⚠️ Rodar `npm run seed` **apaga e recria todos os dados** do banco (volta ao estado fictício inicial). Use com
+> cuidado se você já tiver personalizado clientes, planos, barbeiros ou contas de administrador além dos padrões.
 
 ## Principais endpoints da API
 

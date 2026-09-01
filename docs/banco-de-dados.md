@@ -13,6 +13,7 @@ User (CLIENT) ──1:N── Appointment ──N:1── Barber
 
 Barber ──1:N── WorkingHour        (barberId nulo = horário padrão da barbearia)
 Barber ──1:N── BlockedSchedule    (barberId nulo = bloqueio para toda a barbearia)
+Barber ──0:1── User (BARBER)      (login opcional do barbeiro, concedido pelo admin)
 ```
 
 ## Tabelas
@@ -26,7 +27,7 @@ Barber ──1:N── BlockedSchedule    (barberId nulo = bloqueio para toda a 
 | email | String | único |
 | password | String | hash bcrypt, nunca retornado pela API |
 | phone | String | apenas dígitos, DDD + número |
-| role | Enum `Role` | `CLIENT` \| `ADMIN` |
+| role | Enum `Role` | `CLIENT` \| `ADMIN` \| `BARBER` |
 | active | Boolean | permite desativar um cliente sem apagar seu histórico |
 | createdAt / updatedAt | DateTime | |
 
@@ -35,6 +36,7 @@ Barber ──1:N── BlockedSchedule    (barberId nulo = bloqueio para toda a 
 | Campo | Tipo | Observações |
 |---|---|---|
 | id | UUID (PK) | |
+| userId | UUID? (FK → users, único) | vínculo opcional com uma conta de login (papel `BARBER`); nulo enquanto o admin não concede acesso |
 | name | String | |
 | description | String | |
 | photoUrl | String? | opcional |

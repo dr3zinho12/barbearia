@@ -55,6 +55,12 @@ Erros de validação (Zod) incluem também a lista de campos:
 | PUT | `/barbers/:id` | Admin | Atualiza um barbeiro |
 | DELETE | `/barbers/:id` | Admin | Remove um barbeiro (ou desativa, se houver agendamentos vinculados) |
 | PUT | `/barbers/:id/working-hours` | Admin | Define os 7 dias de expediente do barbeiro |
+| POST | `/barbers/:id/login` | Admin | Concede acesso de login (papel `BARBER`) a um barbeiro existente |
+| GET | `/barbers/me` | Barbeiro | Retorna o próprio perfil de barbeiro |
+| PUT | `/barbers/me` | Barbeiro | Atualiza a própria descrição, especialidades e foto |
+| GET | `/barbers/me/breaks` | Barbeiro | Lista os próprios bloqueios de horário (ex.: almoço) |
+| POST | `/barbers/me/breaks` | Barbeiro | Cria um bloqueio de horário próprio |
+| DELETE | `/barbers/me/breaks/:id` | Barbeiro | Remove um bloqueio de horário próprio |
 
 ## Agendamentos — `/appointments`
 
@@ -63,13 +69,14 @@ Erros de validação (Zod) incluem também a lista de campos:
 | GET | `/appointments/availability` | Autenticado | Query `barberId`, `serviceId`, `date`; retorna horários livres |
 | POST | `/appointments` | Cliente | Cria um agendamento |
 | GET | `/appointments/mine` | Cliente | Lista os agendamentos do cliente logado |
-| GET | `/appointments` | Admin | Lista todos os agendamentos, com filtros e paginação |
+| GET | `/appointments` | Admin, Barbeiro | Lista agendamentos, com filtros e paginação (barbeiro só vê os próprios) |
 | GET | `/appointments/:id` | Autenticado | Detalhe de um agendamento |
-| PUT | `/appointments/:id/cancel` | Autenticado | Cancela (cliente só cancela o próprio, respeitando antecedência mínima) |
-| PUT | `/appointments/:id/reschedule` | Autenticado | Remarca para nova data/horário |
-| PUT | `/appointments/:id/status` | Admin | Atualiza o status manualmente |
+| PUT | `/appointments/:id/cancel` | Cliente, Admin | Cancela (cliente só cancela o próprio, respeitando antecedência mínima) |
+| PUT | `/appointments/:id/reschedule` | Cliente, Admin | Remarca para nova data/horário |
+| PUT | `/appointments/:id/status` | Admin, Barbeiro | Atualiza o status manualmente (barbeiro só nos próprios agendamentos) |
 
-Filtros de `GET /appointments`: `date`, `barberId`, `clientId`, `serviceId`, `status`, `page`, `pageSize`.
+Filtros de `GET /appointments`: `date`, `barberId`, `clientId`, `serviceId`, `status`, `page`, `pageSize` (para o
+papel Barbeiro, `barberId` é sempre forçado ao próprio barbeiro, ignorando o valor enviado).
 
 ## Planos — `/plans`
 
