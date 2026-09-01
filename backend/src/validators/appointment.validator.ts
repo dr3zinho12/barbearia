@@ -33,7 +33,7 @@ export const listAppointmentsQuerySchema = z.object({
   serviceId: z.string().uuid().optional(),
   status: z.enum(['SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELED', 'NO_SHOW']).optional(),
   page: z.coerce.number().int().positive().optional(),
-  pageSize: z.coerce.number().int().positive().max(100).optional(),
+  pageSize: z.coerce.number().int().positive().max(500).optional(),
 });
 
 export type ListAppointmentsQueryInput = z.infer<typeof listAppointmentsQuerySchema>;

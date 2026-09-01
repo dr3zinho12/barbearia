@@ -17,8 +17,9 @@
 Papel `BARBER`, com login próprio concedido pelo administrador (um barbeiro cadastrado só tem acesso ao painel depois
 que um administrador cria as credenciais dele em Barbeiros → "Conceder acesso").
 
-- **Minha agenda**: lista os próprios agendamentos por data, com opção de atualizar o status (confirmar, concluir,
-  marcar não comparecimento) diretamente — restrito aos próprios atendimentos.
+- **Minha agenda**: mostra, sem precisar escolher data, a **fila de atendimentos** (agendados/confirmados de qualquer
+  data, com opção de atualizar o status — confirmar, concluir, marcar não comparecimento) e o **histórico completo**
+  (concluídos, cancelados e não comparecidos) — tudo restrito aos próprios atendimentos.
 - **Horário de almoço / indisponibilidade**: o barbeiro pode bloquear um intervalo de horário (ex.: almoço), o que
   remove esses horários da disponibilidade de agendamento imediatamente, e removê-lo quando quiser voltar a ficar
   disponível.

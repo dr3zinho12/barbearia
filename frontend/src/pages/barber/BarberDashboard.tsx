@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { EmptyState } from '../../components/EmptyState';
-import { CalendarIcon, ClockIcon } from '../../components/icons';
+import { CalendarIcon, ClockIcon, HistoryIcon } from '../../components/icons';
 import { Modal } from '../../components/Modal';
 import { Spinner } from '../../components/Spinner';
 import { StatusBadge } from '../../components/StatusBadge';
@@ -34,7 +34,6 @@ function defaultBreakTimes() {
 export default function BarberDashboard() {
   useDocumentTitle('Minha agenda');
   const { user } = useAuth();
-  const [date, setDate] = useState(todayDateString());
   const [appointments, setAppointments] = useState<Appointment[] | null>(null);
   const [breaks, setBreaks] = useState<BlockedSchedule[] | null>(null);
   const [isBreakModalOpen, setIsBreakModalOpen] = useState(false);
@@ -45,14 +44,15 @@ export default function BarberDashboard() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<BarberBreakPayload>();
 
   function loadAppointments() {
-    appointmentsService.listAll({ date, pageSize: 50 }).then((result) => setAppointments(result.data)).catch(() => setAppointments([]));
+    // Sem filtro de data: traz toda a fila de atendimentos e o histórico de uma vez.
+    appointmentsService.listAll({ pageSize: 500 }).then((result) => setAppointments(result.data)).catch(() => setAppointments([]));
   }
 
   function loadBreaks() {
     barbersService.listMyBreaks().then(setBreaks).catch(() => setBreaks([]));
   }
 
-  useEffect(loadAppointments, [date]);
+  useEffect(loadAppointments, []);
   useEffect(loadBreaks, []);
 
   function openBreakModal() {
@@ -104,6 +104,14 @@ export default function BarberDashboard() {
     ?.filter((b) => b.date.slice(0, 10) >= todayDateString())
     .sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime));
 
+  const queue = appointments
+    ?.filter((a) => a.status === 'SCHEDULED' || a.status === 'CONFIRMED')
+    .sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime));
+
+  const history = appointments
+    ?.filter((a) => a.status === 'COMPLETED' || a.status === 'CANCELED' || a.status === 'NO_SHOW')
+    .sort((a, b) => (b.date + b.startTime).localeCompare(a.date + a.startTime));
+
   return (
     <div className="space-y-8">
       <div>
@@ -152,13 +160,11 @@ export default function BarberDashboard() {
       </div>
 
       <div className="card p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-white">
-            <CalendarIcon className="h-5 w-5 text-brand-blue-400" />
-            Meus agendamentos
-          </h2>
-          <input type="date" className="input max-w-[180px]" value={date} onChange={(event) => setDate(event.target.value)} />
-        </div>
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-white">
+          <CalendarIcon className="h-5 w-5 text-brand-blue-400" />
+          Fila de atendimentos
+        </h2>
+        <p className="mt-1 text-sm text-slate-400">Todos os seus agendamentos pendentes, de qualquer data.</p>
 
         {appointments === null && (
           <div className="mt-6 flex justify-center">
@@ -166,17 +172,18 @@ export default function BarberDashboard() {
           </div>
         )}
 
-        {appointments?.length === 0 && (
+        {queue?.length === 0 && (
           <div className="mt-4">
-            <EmptyState title="Nenhum agendamento nesta data" />
+            <EmptyState title="Nenhum agendamento na fila" description="Você não tem atendimentos pendentes." />
           </div>
         )}
 
-        {appointments && appointments.length > 0 && (
+        {queue && queue.length > 0 && (
           <div className="table-shell mt-5">
             <table className="table-base">
               <thead>
                 <tr>
+                  <th>Data</th>
                   <th>Horário</th>
                   <th>Cliente</th>
                   <th>Serviço</th>
@@ -185,32 +192,82 @@ export default function BarberDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {appointments
-                  .sort((a, b) => a.startTime.localeCompare(b.startTime))
-                  .map((appointment) => (
-                    <tr key={appointment.id}>
-                      <td>{appointment.startTime}</td>
-                      <td>{appointment.client?.name}</td>
-                      <td>{appointment.service?.name}</td>
-                      <td>{formatCurrency(appointment.service?.price ?? 0)}</td>
-                      <td>
-                        <div className="flex items-center gap-2">
-                          <StatusBadge status={appointment.status} />
-                          <select
-                            className="rounded-lg border border-brand-border bg-brand-night px-2 py-1 text-xs text-slate-300"
-                            value={appointment.status}
-                            onChange={(event) => handleStatusChange(appointment, event.target.value as AppointmentStatus)}
-                          >
-                            {STATUS_OPTIONS.map((option) => (
-                              <option key={option} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                {queue.map((appointment) => (
+                  <tr key={appointment.id}>
+                    <td>{formatDate(appointment.date)}</td>
+                    <td>{appointment.startTime}</td>
+                    <td>{appointment.client?.name}</td>
+                    <td>{appointment.service?.name}</td>
+                    <td>{formatCurrency(appointment.service?.price ?? 0)}</td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <StatusBadge status={appointment.status} />
+                        <select
+                          className="rounded-lg border border-brand-border bg-brand-night px-2 py-1 text-xs text-slate-300"
+                          value={appointment.status}
+                          onChange={(event) => handleStatusChange(appointment, event.target.value as AppointmentStatus)}
+                        >
+                          {STATUS_OPTIONS.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div className="card p-6">
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-white">
+          <HistoryIcon className="h-5 w-5 text-brand-blue-400" />
+          Histórico
+        </h2>
+        <p className="mt-1 text-sm text-slate-400">Atendimentos concluídos, cancelados ou não comparecidos.</p>
+
+        {appointments === null && (
+          <div className="mt-6 flex justify-center">
+            <Spinner />
+          </div>
+        )}
+
+        {history?.length === 0 && (
+          <div className="mt-4">
+            <EmptyState title="Nenhum atendimento no histórico" />
+          </div>
+        )}
+
+        {history && history.length > 0 && (
+          <div className="table-shell mt-5">
+            <table className="table-base">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Horário</th>
+                  <th>Cliente</th>
+                  <th>Serviço</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((appointment) => (
+                  <tr key={appointment.id}>
+                    <td>{formatDate(appointment.date)}</td>
+                    <td>{appointment.startTime}</td>
+                    <td>{appointment.client?.name}</td>
+                    <td>{appointment.service?.name}</td>
+                    <td>{formatCurrency(appointment.service?.price ?? 0)}</td>
+                    <td>
+                      <StatusBadge status={appointment.status} />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
