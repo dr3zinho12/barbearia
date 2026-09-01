@@ -23,9 +23,19 @@ que um administrador cria as credenciais dele em Barbeiros → "Conceder acesso"
 - **Horário de almoço / indisponibilidade**: o barbeiro pode bloquear um intervalo de horário (ex.: almoço), o que
   remove esses horários da disponibilidade de agendamento imediatamente, e removê-lo quando quiser voltar a ficar
   disponível.
-- **Meu perfil**: o barbeiro edita sua própria descrição e especialidades/diferenciais (exibidas publicamente na
-  página de barbeiros do site) e altera sua senha. Nome e status ativo/inativo continuam sob controle do
-  administrador.
+- **Meu perfil**: o barbeiro edita sua própria descrição, especialidades/diferenciais (exibidas publicamente na
+  página de barbeiros do site), o **próprio expediente semanal** (dias e horários de atendimento, que passam a valer
+  no cálculo de disponibilidade no lugar do horário padrão da barbearia) e altera sua senha. Nome e status
+  ativo/inativo continuam sob controle do administrador.
+
+## Lembrete de atendimento (simulação de WhatsApp)
+
+Quando o próximo agendamento de um cliente é no dia seguinte, o dashboard do cliente exibe um cartão com a mensagem
+que, em um ambiente de produção, seria enviada por WhatsApp um dia antes do atendimento (ex.: *"Vai conseguir vir, ou
+prefere cancelar?"*), com atalho direto para cancelar ou remarcar. Este projeto acadêmico não possui uma conta de API
+de WhatsApp Business configurada (Twilio, Meta Cloud API etc.), então o envio real não ocorre — o comportamento é
+simulado dentro da própria interface, de forma explícita para o usuário, seguindo o mesmo princípio já usado na
+recuperação de senha.
 
 ## Área do cliente (`/cliente`)
 

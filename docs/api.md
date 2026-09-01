@@ -61,6 +61,7 @@ Erros de validação (Zod) incluem também a lista de campos:
 | GET | `/barbers/me/breaks` | Barbeiro | Lista os próprios bloqueios de horário (ex.: almoço) |
 | POST | `/barbers/me/breaks` | Barbeiro | Cria um bloqueio de horário próprio |
 | DELETE | `/barbers/me/breaks/:id` | Barbeiro | Remove um bloqueio de horário próprio |
+| PUT | `/barbers/me/working-hours` | Barbeiro | Define o próprio expediente semanal (substitui o horário padrão da barbearia) |
 
 ## Agendamentos — `/appointments`
 
