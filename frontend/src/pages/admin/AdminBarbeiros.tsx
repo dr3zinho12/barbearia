@@ -8,7 +8,7 @@ import { Modal } from '../../components/Modal';
 import { Spinner } from '../../components/Spinner';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { extractErrorMessage } from '../../services/api';
-import { barbersService, DayWorkingHourPayload } from '../../services/barbers.service';
+import { barbersService, DayWorkingHourPayload, GrantBarberLoginPayload } from '../../services/barbers.service';
 import { Barber } from '../../types';
 import { weekdayLabel } from '../../utils/format';
 
@@ -18,6 +18,86 @@ interface BarberForm {
   photoUrl?: string;
   specialties: string;
   active: boolean;
+}
+
+function GrantLoginModal({ barber, onClose, onGranted }: { barber: Barber; onClose: () => void; onGranted: () => void }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<GrantBarberLoginPayload>();
+
+  async function onSubmit(data: GrantBarberLoginPayload) {
+    setIsSubmitting(true);
+    try {
+      await barbersService.grantLogin(barber.id, data);
+      toast.success(`Acesso criado para ${barber.name}!`);
+      onGranted();
+    } catch (err) {
+      toast.error(extractErrorMessage(err, 'Não foi possível criar o acesso'));
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <Modal isOpen onClose={onClose} title={`Conceder acesso a ${barber.name}`}>
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div>
+          <label className="label" htmlFor="email">
+            E-mail de acesso
+          </label>
+          <input
+            id="email"
+            type="email"
+            className="input"
+            {...register('email', {
+              required: 'Informe o e-mail',
+              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'E-mail inválido' },
+            })}
+          />
+          {errors.email && <p className="field-error">{errors.email.message}</p>}
+        </div>
+        <div>
+          <label className="label" htmlFor="phone">
+            Telefone
+          </label>
+          <input
+            id="phone"
+            className="input"
+            placeholder="11987654321"
+            {...register('phone', {
+              required: 'Informe o telefone',
+              pattern: { value: /^\d{10,11}$/, message: 'Telefone inválido. Use DDD + número, apenas dígitos' },
+            })}
+          />
+          {errors.phone && <p className="field-error">{errors.phone.message}</p>}
+        </div>
+        <div>
+          <label className="label" htmlFor="password">
+            Senha provisória
+          </label>
+          <input
+            id="password"
+            type="password"
+            className="input"
+            placeholder="Mínimo 6 caracteres, com letras e números"
+            {...register('password', {
+              required: 'Informe uma senha',
+              minLength: { value: 6, message: 'A senha deve ter pelo menos 6 caracteres' },
+              pattern: { value: /^(?=.*[A-Za-z])(?=.*\d).+$/, message: 'A senha deve conter letras e números' },
+            })}
+          />
+          {errors.password && <p className="field-error">{errors.password.message}</p>}
+        </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button type="button" className="btn-ghost" onClick={onClose}>
+            Cancelar
+          </button>
+          <button type="submit" className="btn-primary" disabled={isSubmitting}>
+            {isSubmitting ? 'Criando...' : 'Criar acesso'}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
 }
 
 const DEFAULT_WORKING_HOURS: DayWorkingHourPayload[] = Array.from({ length: 7 }, (_, dayOfWeek) => ({
@@ -127,6 +207,7 @@ export default function AdminBarbeiros() {
   const [barbers, setBarbers] = useState<Barber[] | null>(null);
   const [editingBarber, setEditingBarber] = useState<Barber | 'new' | null>(null);
   const [hoursBarber, setHoursBarber] = useState<Barber | null>(null);
+  const [loginBarber, setLoginBarber] = useState<Barber | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Barber | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -235,6 +316,13 @@ export default function AdminBarbeiros() {
               </div>
               <h3 className="mt-3 font-semibold text-white">{barber.name}</h3>
               <p className="mt-1 text-xs text-slate-400">{barber.specialties.join(', ')}</p>
+              <p className="mt-2 text-xs">
+                {barber.userId ? (
+                  <span className="font-medium text-emerald-400">Com acesso ao painel</span>
+                ) : (
+                  <span className="font-medium text-amber-400">Sem acesso ao painel</span>
+                )}
+              </p>
               <div className="mt-4 flex flex-wrap gap-2 text-sm">
                 <button type="button" className="font-medium text-brand-blue-400 hover:underline" onClick={() => openEdit(barber)}>
                   Editar
@@ -242,6 +330,11 @@ export default function AdminBarbeiros() {
                 <button type="button" className="font-medium text-brand-blue-400 hover:underline" onClick={() => setHoursBarber(barber)}>
                   Horários
                 </button>
+                {!barber.userId && (
+                  <button type="button" className="font-medium text-brand-blue-400 hover:underline" onClick={() => setLoginBarber(barber)}>
+                    Conceder acesso
+                  </button>
+                )}
                 <button type="button" className="font-medium text-red-400 hover:underline" onClick={() => setDeleteTarget(barber)}>
                   Excluir
                 </button>
@@ -289,6 +382,17 @@ export default function AdminBarbeiros() {
       </Modal>
 
       {hoursBarber && <WorkingHoursModal barber={hoursBarber} onClose={() => setHoursBarber(null)} />}
+
+      {loginBarber && (
+        <GrantLoginModal
+          barber={loginBarber}
+          onClose={() => setLoginBarber(null)}
+          onGranted={() => {
+            setLoginBarber(null);
+            loadBarbers();
+          }}
+        />
+      )}
 
       <ConfirmDialog
         isOpen={!!deleteTarget}

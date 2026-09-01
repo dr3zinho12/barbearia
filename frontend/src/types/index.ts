@@ -1,4 +1,4 @@
-export type Role = 'CLIENT' | 'ADMIN';
+export type Role = 'CLIENT' | 'ADMIN' | 'BARBER';
 
 export type AppointmentStatus = 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED' | 'NO_SHOW';
 
@@ -26,6 +26,7 @@ export interface WorkingHour {
 
 export interface Barber {
   id: string;
+  userId: string | null;
   name: string;
   description: string;
   photoUrl: string | null;

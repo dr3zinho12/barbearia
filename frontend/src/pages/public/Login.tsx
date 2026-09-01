@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { extractErrorMessage } from '../../services/api';
+import { dashboardPathForRole } from '../../utils/format';
 
 interface LoginForm {
   email: string;
@@ -30,7 +31,7 @@ export default function Login() {
       const user = await login(data);
       toast.success(`Bem-vindo(a) de volta, ${user.name.split(' ')[0]}!`);
       const redirectTo = (location.state as { from?: { pathname: string } } | null)?.from?.pathname;
-      navigate(redirectTo ?? (user.role === 'ADMIN' ? '/admin' : '/cliente'));
+      navigate(redirectTo ?? dashboardPathForRole(user.role));
     } catch (err) {
       toast.error(extractErrorMessage(err, 'E-mail ou senha inválidos'));
     } finally {

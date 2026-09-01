@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ClientLayout } from './layouts/ClientLayout';
 import { AdminLayout } from './layouts/AdminLayout';
+import { BarberLayout } from './layouts/BarberLayout';
 import { PublicLayout } from './layouts/PublicLayout';
 import AdminAdministradores from './pages/admin/AdminAdministradores';
 import AdminAgendamentos from './pages/admin/AdminAgendamentos';
@@ -13,6 +14,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHorarios from './pages/admin/AdminHorarios';
 import AdminPlanos from './pages/admin/AdminPlanos';
 import AdminServicos from './pages/admin/AdminServicos';
+import BarberDashboard from './pages/barber/BarberDashboard';
+import BarberPerfil from './pages/barber/BarberPerfil';
 import ClientDashboard from './pages/client/ClientDashboard';
 import Historico from './pages/client/Historico';
 import MeusAgendamentos from './pages/client/MeusAgendamentos';
@@ -51,6 +54,13 @@ export default function App() {
           <Route path="historico" element={<Historico />} />
           <Route path="planos" element={<PlanosCliente />} />
           <Route path="perfil" element={<PerfilCliente />} />
+        </Route>
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={['BARBER']} />}>
+        <Route path="barbeiro" element={<BarberLayout />}>
+          <Route index element={<BarberDashboard />} />
+          <Route path="perfil" element={<BarberPerfil />} />
         </Route>
       </Route>
 

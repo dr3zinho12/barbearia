@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { brand } from '../config/brand';
 import { useAuth } from '../contexts/AuthContext';
+import { dashboardPathForRole } from '../utils/format';
 
 const PUBLIC_LINKS = [
   { to: '/', label: 'Início' },
@@ -21,7 +22,7 @@ export function Navbar() {
     navigate('/');
   }
 
-  const dashboardPath = user?.role === 'ADMIN' ? '/admin' : '/cliente';
+  const dashboardPath = user ? dashboardPathForRole(user.role) : '/cliente';
 
   return (
     <header className="sticky top-0 z-40 border-b border-brand-border/80 bg-brand-black/90 backdrop-blur">
