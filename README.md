@@ -179,6 +179,7 @@ conflitos de agendamento. Requer um banco de dados PostgreSQL configurado e o se
 | [`docs/funcionalidades.md`](docs/funcionalidades.md) | Lista de funcionalidades e regras de negócio |
 | [`docs/requisitos.md`](docs/requisitos.md) | Requisitos funcionais e não funcionais |
 | [`docs/instalacao.md`](docs/instalacao.md) | Passo a passo de instalação |
+| [`docs/deploy.md`](docs/deploy.md) | Como publicar o site na internet (Render + Vercel) |
 | [`docs/tcc-documentacao.md`](docs/tcc-documentacao.md) | Esqueleto da monografia (ABNT NBR 14724) |
 | [`docs/cronograma.md`](docs/cronograma.md) | Cronograma de desenvolvimento e marcos de versionamento |
 | [`docs/apresentacao.md`](docs/apresentacao.md) | Roteiro sugerido para a apresentação do TCC |
