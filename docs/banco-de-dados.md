@@ -1,6 +1,6 @@
 # Modelo de Banco de Dados
 
-Banco de dados relacional **PostgreSQL**, gerenciado pelo Prisma ORM (`backend/prisma/schema.prisma`).
+Banco de dados relacional **SQLite** (um único arquivo, `backend/prisma/dev.db`, sem instalar nenhum servidor de banco de dados), gerenciado pelo Prisma ORM (`backend/prisma/schema.prisma`).
 
 ## Diagrama de entidades e relacionamentos
 
@@ -27,7 +27,7 @@ Barber ──0:1── User (BARBER)      (login opcional do barbeiro, concedido
 | email | String | único |
 | password | String | hash bcrypt, nunca retornado pela API |
 | phone | String | apenas dígitos, DDD + número |
-| role | Enum `Role` | `CLIENT` \| `ADMIN` \| `BARBER` |
+| role | String | `CLIENT` \| `ADMIN` \| `BARBER` (o SQLite não tem enum nativo; os valores são validados pelo Zod) |
 | active | Boolean | permite desativar um cliente sem apagar seu histórico |
 | createdAt / updatedAt | DateTime | |
 
@@ -40,7 +40,7 @@ Barber ──0:1── User (BARBER)      (login opcional do barbeiro, concedido
 | name | String | |
 | description | String | |
 | photoUrl | String? | opcional |
-| specialties | String[] | lista de especialidades |
+| specialties | String | lista de especialidades salva como texto JSON (o SQLite não tem um tipo nativo de lista); a API converte automaticamente para um array de verdade nas respostas |
 | active | Boolean | |
 | createdAt / updatedAt | DateTime | |
 
@@ -51,7 +51,7 @@ Barber ──0:1── User (BARBER)      (login opcional do barbeiro, concedido
 | id | UUID (PK) | |
 | name | String | |
 | description | String | |
-| price | Decimal(10,2) | |
+| price | Float | |
 | duration | Int | duração em minutos, usada no cálculo de disponibilidade |
 | active | Boolean | |
 | createdAt / updatedAt | DateTime | |
@@ -64,9 +64,9 @@ Barber ──0:1── User (BARBER)      (login opcional do barbeiro, concedido
 | clientId | UUID (FK → users) | |
 | barberId | UUID (FK → barbers) | |
 | serviceId | UUID (FK → services) | |
-| date | Date | apenas a data (sem hora) |
+| date | DateTime | horário sempre à meia-noite UTC; representa apenas a data |
 | startTime / endTime | String (`HH:mm`) | horário calculado a partir da duração do serviço |
-| status | Enum `AppointmentStatus` | `SCHEDULED` \| `CONFIRMED` \| `COMPLETED` \| `CANCELED` \| `NO_SHOW` |
+| status | String | `SCHEDULED` \| `CONFIRMED` \| `COMPLETED` \| `CANCELED` \| `NO_SHOW` (validado pelo Zod) |
 | notes | String? | observações do cliente |
 | createdAt / updatedAt | DateTime | |
 
@@ -79,8 +79,8 @@ Barber ──0:1── User (BARBER)      (login opcional do barbeiro, concedido
 | id | UUID (PK) | |
 | name | String | |
 | description | String | |
-| price | Decimal(10,2) | valor mensal |
-| benefits | String[] | lista de benefícios exibidos ao cliente |
+| price | Float | valor mensal |
+| benefits | String | lista de benefícios salva como texto JSON, convertida para array pela API (mesmo mecanismo de `specialties`) |
 | active | Boolean | |
 | createdAt / updatedAt | DateTime | |
 
@@ -93,7 +93,7 @@ Barber ──0:1── User (BARBER)      (login opcional do barbeiro, concedido
 | planId | UUID (FK → plans) | |
 | startDate | DateTime | |
 | endDate | DateTime? | preenchida ao cancelar |
-| status | Enum `SubscriptionStatus` | `ACTIVE` \| `CANCELED` \| `EXPIRED` |
+| status | String | `ACTIVE` \| `CANCELED` \| `EXPIRED` (validado pelo Zod) |
 
 Assinar um novo plano cancela automaticamente qualquer assinatura ativa anterior do mesmo cliente.
 
@@ -113,7 +113,7 @@ Assinar um novo plano cancela automaticamente qualquer assinatura ativa anterior
 |---|---|---|
 | id | UUID (PK) | |
 | barberId | UUID? (FK → barbers) | nulo = bloqueio para toda a barbearia |
-| date | Date | |
+| date | DateTime | horário sempre à meia-noite UTC; representa apenas a data |
 | startTime / endTime | String (`HH:mm`) | |
 | reason | String? | motivo do bloqueio (folga, feriado, manutenção) |
 | createdAt | DateTime | |

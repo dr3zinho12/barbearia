@@ -3,29 +3,33 @@
 Este guia coloca o site no ar com um link público (ex: `https://royal-cut.vercel.app`), sem precisar instalar
 nada no computador da escola. Usa dois serviços gratuitos:
 
-- **Render** — hospeda o back-end (API) e o banco de dados PostgreSQL.
+- **Render** — hospeda o back-end (API), com o banco SQLite junto no mesmo serviço.
 - **Vercel** — hospeda o front-end (o site que o usuário vê).
 
 Ambos têm plano gratuito e login direto pela conta do GitHub que você já usa neste projeto.
 
 > **Aviso sobre planos gratuitos:** os limites de cada serviço podem mudar com o tempo. Se algo na tela não bater
-> exatamente com este guia, confira a página de preços/planos atual do Render ou da Vercel — o passo a passo
-> geral (conectar o GitHub, configurar variáveis de ambiente) costuma ser o mesmo.
+> exatamente com este guia, confira a página de preços/planos atual do serviço — o passo a passo geral (conectar
+> o GitHub, configurar variáveis de ambiente) costuma ser o mesmo.
 
-## Parte 1 — Back-end e banco de dados no Render
+> **Sobre o banco SQLite na nuvem:** o plano gratuito do Render tem um disco temporário — o arquivo do banco some
+> sempre que o serviço reinicia (o que acontece, por exemplo, a cada novo `git push`, ou depois de um tempo sem
+> uso). Para um deploy de demonstração isso é aceitável: se os dados sumirem, basta rodar `npm run seed` de novo
+> pela aba **Shell** do Render (passo 7 abaixo). Se quiser um banco permanente na nuvem, seria necessário usar
+> outro banco (PostgreSQL/MySQL hospedado) só para esse deploy — não é necessário para a apresentação.
+
+## Parte 1 — Back-end no Render
 
 1. Crie uma conta em [render.com](https://render.com) usando "Sign in with GitHub" (mesma conta do repositório
    `barbearia`).
 2. No painel do Render, clique em **New +** → **Blueprint**.
 3. Selecione o repositório `Dr3zinho12/barbearia`. O Render vai encontrar automaticamente o arquivo
-   `render.yaml` na raiz do projeto e propor a criação de:
-   - um banco de dados PostgreSQL (`royal-cut-db`);
-   - um serviço web para a API (`royal-cut-api`), já configurado para instalar dependências, gerar o Prisma e
-     rodar as migrations sozinho.
+   `render.yaml` na raiz do projeto e propor a criação de um serviço web para a API (`royal-cut-api`), já
+   configurado para instalar dependências, gerar o Prisma e rodar as migrations sozinho.
 4. Clique em **Apply** e aguarde o deploy terminar (aparece "Live" quando pronto). Isso pode levar alguns minutos.
 5. Copie a URL pública gerada para a API, algo como `https://royal-cut-api.onrender.com`.
-6. Popule o banco com os dados de demonstração (só uma vez): no painel do serviço `royal-cut-api`, abra a aba
-   **Shell** e rode:
+6. Popule o banco com os dados de demonstração (repita sempre que o serviço reiniciar e os dados sumirem): no
+   painel do serviço `royal-cut-api`, abra a aba **Shell** e rode:
    ```bash
    npm run seed
    ```

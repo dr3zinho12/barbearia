@@ -29,11 +29,11 @@ Sugestão de estrutura para a defesa do TCC. Os tempos são aproximados.
 
 - Front-End: React, JavaScript, Vite, Tailwind CSS, React Router, React Hook Form.
 - Back-End: Node.js, Express, JavaScript, Prisma, Zod, JWT, bcrypt.
-- Banco de dados: PostgreSQL.
+- Banco de dados: SQLite (um único arquivo, sem instalar nada).
 
 ## 7. Arquitetura (2 min)
 
-- Mostrar o diagrama de `docs/arquitetura.md`: Front-End ⇄ API REST ⇄ PostgreSQL, arquitetura em camadas no back-end.
+- Mostrar o diagrama de `docs/arquitetura.md`: Front-End ⇄ API REST ⇄ SQLite, arquitetura em camadas no back-end.
 
 ## 8. Banco de dados (1–2 min)
 

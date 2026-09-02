@@ -34,7 +34,7 @@ um dashboard.
 
 **Back-End**: Node.js, JavaScript (módulos ES nativos), Express, Prisma ORM, Zod (validação), JWT (autenticação), bcrypt (hash de senha).
 
-**Banco de dados**: PostgreSQL.
+**Banco de dados**: SQLite (um único arquivo, sem instalar nenhum servidor de banco de dados).
 
 **Testes**: Vitest + Supertest (back-end).
 
@@ -43,10 +43,10 @@ um dashboard.
 Ver detalhamento completo em [`docs/arquitetura.md`](docs/arquitetura.md).
 
 ```
-Front-End (React/Vite) ⇄ API REST (Node.js/Express) ⇄ PostgreSQL (via Prisma)
+Front-End (React/Vite) ⇄ API REST (Node.js/Express) ⇄ SQLite (via Prisma)
 ```
 
-O back-end segue arquitetura em camadas: `routes → controllers → services → Prisma → PostgreSQL`, com middlewares de
+O back-end segue arquitetura em camadas: `routes → controllers → services → Prisma → SQLite`, com middlewares de
 autenticação (JWT), autorização por papel (`CLIENT`/`ADMIN`), validação (Zod) e tratamento centralizado de erros.
 
 ## Estrutura de pastas
@@ -80,14 +80,14 @@ black-blue-barber/
 ## Instalação e execução
 
 > **Atalho para Windows**: depois de instalar tudo pela primeira vez (passos abaixo), basta dar duplo clique em
-> [`Iniciar Site.bat`](Iniciar%20Site.bat), na raiz do projeto. Ele confere se o banco de dados está no ar, liga o
-> back-end e o front-end automaticamente, e abre o site sozinho no navegador.
+> [`Iniciar Site.bat`](Iniciar%20Site.bat), na raiz do projeto. Ele liga o back-end e o front-end automaticamente e
+> abre o site sozinho no navegador — não é preciso nenhum banco de dados externo rodando.
 
 Guia completo e detalhado em [`docs/instalacao.md`](docs/instalacao.md). Resumo:
 
 ```bash
-# 1. Banco de dados
-createdb black_blue_barber   # ou crie manualmente via psql/pgAdmin
+# 1. Banco de dados: nenhuma instalação necessária — é um arquivo SQLite criado automaticamente
+# pelo Prisma no próximo passo.
 
 # 2. Back-End
 cd backend
@@ -167,7 +167,7 @@ npm run test
 ```
 
 Cobrem: cadastro e login, autorização por papel, CRUD de serviços e a regra mais crítica do sistema — a prevenção de
-conflitos de agendamento. Requer um banco de dados PostgreSQL configurado e o seed executado (para o usuário admin).
+conflitos de agendamento. Requer o banco de dados configurado (`npm run prisma:migrate`) e o seed executado (para o usuário admin).
 
 ## Documentação complementar
 

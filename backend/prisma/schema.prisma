@@ -3,29 +3,15 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  CLIENT
-  ADMIN
-  BARBER
-}
-
-enum AppointmentStatus {
-  SCHEDULED
-  CONFIRMED
-  COMPLETED
-  CANCELED
-  NO_SHOW
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELED
-  EXPIRED
-}
+// SQLite não suporta enums nativos do banco; os valores abaixo são os únicos
+// aceitos para cada campo, validados pelos schemas Zod em src/validators.
+// Role: CLIENT | ADMIN | BARBER
+// AppointmentStatus: SCHEDULED | CONFIRMED | COMPLETED | CANCELED | NO_SHOW
+// SubscriptionStatus: ACTIVE | CANCELED | EXPIRED
 
 model User {
   id        String   @id @default(uuid())
@@ -33,7 +19,7 @@ model User {
   email     String   @unique
   password  String
   phone     String
-  role      Role     @default(CLIENT)
+  role      String   @default("CLIENT")
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,7 +37,7 @@ model Barber {
   name        String
   description String
   photoUrl    String?
-  specialties String[]
+  specialties String   @default("[]") // lista de strings salva como texto JSON (SQLite não tem tipo de lista)
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -68,7 +54,7 @@ model Service {
   id          String   @id @default(uuid())
   name        String
   description String
-  price       Decimal  @db.Decimal(10, 2)
+  price       Float
   duration    Int
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -80,17 +66,17 @@ model Service {
 }
 
 model Appointment {
-  id        String            @id @default(uuid())
+  id        String   @id @default(uuid())
   clientId  String
   barberId  String
   serviceId String
-  date      DateTime          @db.Date
+  date      DateTime
   startTime String
   endTime   String
-  status    AppointmentStatus @default(SCHEDULED)
+  status    String   @default("SCHEDULED")
   notes     String?
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   client  User    @relation(fields: [clientId], references: [id])
   barber  Barber  @relation(fields: [barberId], references: [id])
@@ -105,8 +91,8 @@ model Plan {
   id          String   @id @default(uuid())
   name        String
   description String
-  price       Decimal  @db.Decimal(10, 2)
-  benefits    String[]
+  price       Float
+  benefits    String   @default("[]") // lista de strings salva como texto JSON (SQLite não tem tipo de lista)
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -117,14 +103,14 @@ model Plan {
 }
 
 model Subscription {
-  id        String             @id @default(uuid())
+  id        String    @id @default(uuid())
   clientId  String
   planId    String
-  startDate DateTime           @default(now())
+  startDate DateTime  @default(now())
   endDate   DateTime?
-  status    SubscriptionStatus @default(ACTIVE)
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
+  status    String    @default("ACTIVE")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   client User @relation(fields: [clientId], references: [id])
   plan   Plan @relation(fields: [planId], references: [id])
@@ -154,7 +140,7 @@ model WorkingHour {
 model BlockedSchedule {
   id        String   @id @default(uuid())
   barberId  String?
-  date      DateTime @db.Date
+  date      DateTime
   startTime String
   endTime   String
   reason    String?

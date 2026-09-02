@@ -8,21 +8,7 @@ echo    ROYAL CUT - Iniciando o sistema
 echo ============================================================
 echo.
 
-set "PATH=C:\Program Files\nodejs;C:\Program Files\PostgreSQL\17\bin;%PATH%"
-
-echo [1/4] Verificando o banco de dados (PostgreSQL)...
-sc query postgresql-x64-17 | find "RUNNING" >nul
-if errorlevel 1 (
-    echo   AVISO: o servico do PostgreSQL nao parece estar rodando.
-    echo   Abra o "Servicos" do Windows e inicie o "postgresql-x64-17",
-    echo   ou reinicie o computador, depois rode este arquivo de novo.
-    echo.
-    pause
-    exit /b 1
-) else (
-    echo   OK - banco de dados rodando.
-)
-echo.
+set "PATH=C:\Program Files\nodejs;%PATH%"
 
 if not exist "%~dp0backend\node_modules" (
     echo   AVISO: dependencias do back-end nao instaladas.
@@ -40,15 +26,15 @@ if not exist "%~dp0frontend\node_modules" (
     exit /b 1
 )
 
-echo [2/4] Iniciando o back-end (API)...
+echo [1/3] Iniciando o back-end (API)...
 start "Royal Cut - BACK-END (nao feche)" cmd /k "cd /d "%~dp0backend" && npm run dev"
 
 timeout /t 4 /nobreak >nul
 
-echo [3/4] Iniciando o front-end (site)...
+echo [2/3] Iniciando o front-end (site)...
 start "Royal Cut - FRONT-END (nao feche)" cmd /k "cd /d "%~dp0frontend" && npm run dev"
 
-echo [4/4] Aguardando o site ficar pronto...
+echo [3/3] Aguardando o site ficar pronto...
 timeout /t 6 /nobreak >nul
 
 start http://localhost:5173
@@ -61,6 +47,8 @@ echo.
 echo   Duas janelas pretas foram abertas (back-end e front-end).
 echo   NAO FECHE essas janelas enquanto estiver usando o site.
 echo   Para desligar tudo, so fechar as duas janelas pretas.
+echo   (O banco de dados e um arquivo unico, nao precisa de nenhum
+echo    programa externo rodando.)
 echo ============================================================
 echo.
 pause

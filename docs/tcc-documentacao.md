@@ -69,7 +69,7 @@ desenvolvimento e propor melhorias futuras (ver seção correspondente em `docs/
 ## Elementos pós-textuais
 
 - **Referências**: listar, em ordem alfabética e conforme ABNT NBR 6023, toda a bibliografia e documentação técnica
-  utilizada (documentação oficial do React, Node.js, Express, Prisma, PostgreSQL, JWT, etc.).
+  utilizada (documentação oficial do React, Node.js, Express, Prisma, SQLite, JWT, etc.).
 - **Anexos/Apêndices**: sugere-se incluir como apêndice o modelo de dados completo (`docs/banco-de-dados.md`), a
   referência de endpoints (`docs/api.md`) e capturas de tela das principais telas do sistema.
 

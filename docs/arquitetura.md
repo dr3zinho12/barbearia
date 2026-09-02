@@ -7,8 +7,8 @@ API REST:
 
 ```
 ┌─────────────────────┐        HTTPS / JSON        ┌──────────────────────┐        SQL (Prisma)       ┌──────────────┐
-│   Front-End (SPA)    │ ─────────────────────────▶ │   Back-End (API)      │ ─────────────────────────▶ │  PostgreSQL  │
-│  React + JavaScript  │ ◀───────────────────────── │  Node.js + Express    │ ◀───────────────────────── │              │
+│   Front-End (SPA)    │ ─────────────────────────▶ │   Back-End (API)      │ ─────────────────────────▶ │    SQLite    │
+│  React + JavaScript  │ ◀───────────────────────── │  Node.js + Express    │ ◀───────────────────────── │ (um arquivo) │
 │  Vite + Tailwind CSS │        JWT no header        │  JavaScript + Prisma  │                            │              │
 └─────────────────────┘                              └──────────────────────┘                            └──────────────┘
 ```
@@ -36,10 +36,10 @@ Requisição HTTP
   services/           → contém as regras de negócio (ex.: cálculo de disponibilidade,
       │                  prevenção de conflitos, regras de cancelamento)
       ▼
-  Prisma Client        → executa as consultas SQL de forma tipada
+  Prisma Client        → executa as consultas SQL
       │
       ▼
-  PostgreSQL
+  SQLite
 ```
 
 Cada camada só conhece a camada imediatamente abaixo, o que facilita testes, manutenção e substituição de partes do
@@ -109,4 +109,4 @@ resolvido em `appointment.service.js`:
 | JWT sem refresh token | Simplicidade adequada ao escopo acadêmico; token de 7 dias é suficiente para demonstração |
 | Token de redefinição de senha retornado pela API | Não há serviço de e-mail configurado no projeto; o token é devolvido diretamente na resposta, documentado como comportamento de demonstração |
 | Tailwind CSS | Consistência visual rápida, fácil de manter uma identidade própria sem CSS customizado extenso |
-| Um único banco relacional (PostgreSQL) | Todas as entidades são fortemente relacionadas (agendamento depende de cliente, barbeiro e serviço) |
+| Um único banco relacional (SQLite) | Todas as entidades são fortemente relacionadas (agendamento depende de cliente, barbeiro e serviço) |

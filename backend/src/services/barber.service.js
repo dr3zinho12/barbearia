@@ -2,6 +2,13 @@ import { prisma } from '../config/prisma.js';
 import { AppError } from '../utils/AppError.js';
 import { hashPassword } from '../utils/hash.js';
 
+// O SQLite não tem um tipo de lista nativo: specialties é salvo como texto
+// JSON no banco e precisa ser convertido na escrita.
+function toBarberWriteData(data) {
+  if (data.specialties === undefined) return data;
+  return { ...data, specialties: JSON.stringify(data.specialties) };
+}
+
 export const barberService = {
   async listAll(onlyActive) {
     return prisma.barber.findMany({
@@ -22,12 +29,12 @@ export const barberService = {
   },
 
   async create(data) {
-    return prisma.barber.create({ data });
+    return prisma.barber.create({ data: toBarberWriteData(data) });
   },
 
   async update(id, data) {
     const existing = await this.getById(id);
-    const updated = await prisma.barber.update({ where: { id }, data });
+    const updated = await prisma.barber.update({ where: { id }, data: toBarberWriteData(data) });
 
     // Mantém o nome de exibição da conta de login sincronizado com o
     // nome público do barbeiro, quando houver uma conta vinculada.
@@ -77,7 +84,7 @@ export const barberService = {
 
   async updateOwnProfile(userId, data) {
     const barber = await this.getByUserId(userId);
-    return prisma.barber.update({ where: { id: barber.id }, data });
+    return prisma.barber.update({ where: { id: barber.id }, data: toBarberWriteData(data) });
   },
 
   async grantLogin(barberId, data) {
