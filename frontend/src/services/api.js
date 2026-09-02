@@ -3,7 +3,7 @@ import axios from 'axios';
 const TOKEN_KEY = '@black-blue-barber:token';
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3333/api',
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api',
 });
 
 api.interceptors.request.use((config) => {

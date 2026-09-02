@@ -54,7 +54,7 @@ Inicie a API:
 npm run dev
 ```
 
-A API estará disponível em `http://localhost:3333`. Acesse `http://localhost:3333/` no navegador para confirmar que
+A API estará disponível em `http://localhost:3000`. Acesse `http://localhost:3000/` no navegador para confirmar que
 está online (retorna um JSON simples de status).
 
 ## 3. Configurar e iniciar o Front-End
@@ -68,7 +68,7 @@ npm install
 npm run dev
 ```
 
-Por padrão, `VITE_API_URL` em `.env` aponta para `http://localhost:3333/api`, compatível com o back-end iniciado no
+Por padrão, `VITE_API_URL` em `.env` aponta para `http://localhost:3000/api`, compatível com o back-end iniciado no
 passo anterior.
 
 O Front-End estará disponível em `http://localhost:5173`.
@@ -98,5 +98,5 @@ npm run test
 |---|---|---|
 | `Erro: Variável de ambiente obrigatória não definida` | Arquivo `.env` não criado/configurado | Copie `.env.example` para `.env` e preencha os valores |
 | Erro de conexão com o banco | `DATABASE_URL` incorreta, ou a pasta `backend/prisma` sem permissão de escrita | Confirme que `DATABASE_URL="file:./dev.db"` está no `.env` e rode `npm run prisma:migrate` novamente |
-| Front-End não recebe dados da API | `VITE_API_URL` incorreta ou back-end não iniciado | Confirme que a API está rodando em `http://localhost:3333` |
+| Front-End não recebe dados da API | `VITE_API_URL` incorreta ou back-end não iniciado | Confirme que a API está rodando em `http://localhost:3000` |
 | Erro de CORS no navegador | `CORS_ORIGIN` no back-end diferente da URL do Front-End | Ajuste `CORS_ORIGIN` em `backend/.env` |

@@ -1,6 +1,6 @@
 # Referência da API
 
-URL base local: `http://localhost:3333/api`
+URL base local: `http://localhost:3000/api`
 
 Todas as respostas são em JSON. Rotas autenticadas exigem o header:
 

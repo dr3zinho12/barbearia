@@ -96,7 +96,7 @@ npm install
 npm run prisma:generate
 npm run prisma:migrate
 npm run seed
-npm run dev                   # http://localhost:3333
+npm run dev                   # http://localhost:3000
 
 # 3. Front-End (em outro terminal)
 cd frontend
